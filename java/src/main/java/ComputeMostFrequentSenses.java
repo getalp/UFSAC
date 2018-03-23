@@ -2,27 +2,27 @@ import getalp.wsd.common.utils.POSConverter;
 import getalp.wsd.common.wordnet.WordnetHelper;
 import getalp.wsd.ufsac.core.Word;
 import getalp.wsd.ufsac.streaming.reader.StreamingCorpusReaderWord;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.*;
 
 public class ComputeMostFrequentSenses
 {
-    public static void main(String[] args) throws Exception
+    /**
+     * Usage: java ComputeMostFrequentSenses [corpus]...
+     */
+    public static void main(String[] corpusPaths) throws Exception
     {
-        Map<String, Map<String, Integer>> map = new HashMap<>();
+        Map<String, Map<String, Integer>> wordKeyToSenseKeyCount = new HashMap<>();
         
-        WordnetHelper wn21 = WordnetHelper.wn21();
+        WordnetHelper wn = WordnetHelper.wn();
         
-        for (String wordKey : wn21.getVocabulary())
+        for (String wordKey : wn.getVocabulary())
         {
-            Map<String, Integer> mapmap = new HashMap<>();
-            for (String senseKey : wn21.getSenseKeyListFromWordKey(wordKey))
+            Map<String, Integer> senseKeyCount = new HashMap<>();
+            for (String senseKey : wn.getSenseKeyListFromWordKey(wordKey))
             {
-                mapmap.put(senseKey, 0);
+                senseKeyCount.put(senseKey, 0);
             }
-            map.put(wordKey, mapmap);
+            wordKeyToSenseKeyCount.put(wordKey, senseKeyCount);
         }
         
         StreamingCorpusReaderWord corpus = new StreamingCorpusReaderWord()
@@ -32,40 +32,37 @@ public class ComputeMostFrequentSenses
             {
                 String lemma = word.getAnnotationValue("lemma");
                 String pos = word.getAnnotationValue("pos");
-                String wn21Key = word.getAnnotationValue("wn21_key");
-                if (!lemma.isEmpty() && !pos.isEmpty() && !wn21Key.isEmpty())
+                String senseKey = word.getAnnotationValue("wn" + wn.getVersion() + "_key");
+                if (!lemma.isEmpty() && !pos.isEmpty() && !senseKey.isEmpty())
                 {
                     pos = POSConverter.toWNPOS(pos);
                     String wordKey = lemma + "%" + pos;
-                    String senseKey = wn21Key;
-                    Map<String, Integer> mapmap = map.get(wordKey);
-                    Integer exValue = mapmap.get(senseKey);
+                    Map<String, Integer> senseKeyCount = wordKeyToSenseKeyCount.get(wordKey);
+                    Integer exValue = senseKeyCount.get(senseKey);
                     Integer newValue = exValue + 1;
-                    mapmap.put(senseKey, newValue);
+                    senseKeyCount.put(senseKey, newValue);
                 }
             }
         };
 
-        corpus.load("data/corpus/semcor.xml");
-        
-        BufferedWriter out = new BufferedWriter(new FileWriter("data/mfs"));
-        
-        for (String wordKey : map.keySet())
+        for (String corpusPath : corpusPaths)
         {
-            String bestSenseKey = "";
-            int bestSenseKeyScore = -1;
-            for (String senseKey : map.get(wordKey).keySet())
+            corpus.load(corpusPath);
+        }
+                
+        for (String wordKey : wordKeyToSenseKeyCount.keySet())
+        {
+            String mostFrequentSenseKey = "";
+            int mostFrequentSenseKeyCount = -1;
+            for (String senseKey : wordKeyToSenseKeyCount.get(wordKey).keySet())
             {
-                if (map.get(wordKey).get(senseKey) > bestSenseKeyScore)
+                if (wordKeyToSenseKeyCount.get(wordKey).get(senseKey) > mostFrequentSenseKeyCount)
                 {
-                    bestSenseKey = senseKey;
-                    bestSenseKeyScore = map.get(wordKey).get(senseKey);
+                    mostFrequentSenseKey = senseKey;
+                    mostFrequentSenseKeyCount = wordKeyToSenseKeyCount.get(wordKey).get(senseKey);
                 }
             }
-            out.write(wordKey + " " + bestSenseKey + "\n");
-        }
-        
-        out.close();
-        
+            System.out.println(wordKey + " " + mostFrequentSenseKey);
+        }        
     }
 }
