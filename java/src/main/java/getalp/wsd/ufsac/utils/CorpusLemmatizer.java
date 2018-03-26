@@ -10,10 +10,17 @@ import getalp.wsd.ufsac.core.Word;
  * Every word must be POS tagged first in order to be lemmatized.
  */
 public class CorpusLemmatizer
-{    
+{
+    private String lemmaAnnotationName;
+
     public CorpusLemmatizer()
     {
+        this("lemma");
+    }
 
+    public CorpusLemmatizer(String lemmaAnnotationName)
+    {
+        this.lemmaAnnotationName = lemmaAnnotationName;
     }
 
     public void tag(List<Word> words)
@@ -21,15 +28,15 @@ public class CorpusLemmatizer
         addWNMorphyLemmaAnnotations(words);
     }
 
-    private static void addWNMorphyLemmaAnnotations(List<Word> words)
+    private void addWNMorphyLemmaAnnotations(List<Word> words)
     {        
         WordnetHelper wn = WordnetHelper.wn();
         for (Word word : words)
         {
-            if (word.hasAnnotation("lemma")) continue;
+            if (word.hasAnnotation(lemmaAnnotationName)) continue;
             String pos = POSConverter.toWNPOS(word.getAnnotationValue("pos"));
             if (pos.equals("x")) continue;
-            word.setAnnotation("lemma", wn.morphy(word.getValue(), pos));
+            word.setAnnotation(lemmaAnnotationName, wn.morphy(word.getValue(), pos));
         }
     }
 }

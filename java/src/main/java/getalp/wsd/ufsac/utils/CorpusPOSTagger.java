@@ -20,17 +20,30 @@ public class CorpusPOSTagger
     private MaxentTagger tagger = null;
     
     private boolean privilegiateSpeedOverQuality;
+    
+    private String posAnnotationName;
 
     public CorpusPOSTagger()
     {
-        this(false);
+        this(false, "pos");
+    }
+
+    public CorpusPOSTagger(String posAnnotationName)
+    {
+        this(false, posAnnotationName);
     }
 
     public CorpusPOSTagger(boolean privilegiateSpeedOverQuality)
     {
-        this.privilegiateSpeedOverQuality = privilegiateSpeedOverQuality;
+        this(privilegiateSpeedOverQuality, "pos");
     }
-    
+
+    public CorpusPOSTagger(boolean privilegiateSpeedOverQuality, String posAnnotationName)
+    {
+        this.privilegiateSpeedOverQuality = privilegiateSpeedOverQuality;
+        this.posAnnotationName = posAnnotationName;
+    }
+
     public void tag(List<Word> words)
     {
         addStanfordPOSAnnotations(words);
@@ -45,10 +58,10 @@ public class CorpusPOSTagger
         for (int i = 0; i < stanfordWords.size(); i++)
         {
             Word word = words.get(i);
-            String pos = word.getAnnotationValue("pos");
+            String pos = word.getAnnotationValue(posAnnotationName);
             if (!pos.isEmpty()) continue;
             pos = stanfordWords.get(i).tag();
-            word.setAnnotation("pos", pos);
+            word.setAnnotation(posAnnotationName, pos);
         }
     }
     

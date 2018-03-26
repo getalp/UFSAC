@@ -28,8 +28,12 @@ import getalp.wsd.ufsac.streaming.modifier.StreamingCorpusModifierWord;
 
 public class OriginalCorpusConverter
 {
-    private MaxentTagger tagger = null;
-
+    private CorpusPOSTagger posTagger = new CorpusPOSTagger(false, "stanford_pos");
+    
+    private CorpusLemmatizer lemmatizer = new CorpusLemmatizer();
+    
+    
+    
     private Map<String, Integer> wordAnnotationOrder = null;
     
     public void convert(CorpusConverter formatConverter, String originalCorpusPath, String ufsacCorpusPath, int originalWordnetVersion, int newWordnetVersion, boolean mergeDuplicateSentences)
@@ -245,63 +249,26 @@ public class OriginalCorpusConverter
     private void addStanfordPOSAnnotations(String corpusPath)
     {
         System.out.println("[" + corpusPath + "] Adding POS annotations with Stanford POS Tagger...");
-
-        if (tagger == null) tagger = initStanfordPOSTagger();
         
         StreamingCorpusModifierSentence inout = new StreamingCorpusModifierSentence()
         {
             public void modifySentence(Sentence sentence)
             {
-                List<TaggedWord> stanfordSentence = tagger.tagSentence(toStanfordSentence(sentence));
-                assert (stanfordSentence.size() != sentence.getWords().size());
-                for (int i = 0; i < stanfordSentence.size(); i++)
-                {
-                    Word word = sentence.getWords().get(i);
-                    String pos = word.getAnnotationValue("pos");
-                    if (!pos.isEmpty()) continue;
-                    pos = stanfordSentence.get(i).tag();
-                    word.setAnnotation("pos", pos);
-                }
+                posTagger.tag(sentence.getWords());
             }
         };
         inout.load(corpusPath);
     }
     
-    private MaxentTagger initStanfordPOSTagger()
-    {
-        StdOutStdErr.stfu();
-        MaxentTagger tagger = new MaxentTagger("data/stanford/model/english.tagger");
-        StdOutStdErr.speak();
-        return tagger;
-    }
-
-    private List<HasWord> toStanfordSentence(Sentence sentence)
-    {
-        List<HasWord> stanfordSentence = new ArrayList<>();
-        for (Word word : sentence.getWords())
-        {
-            stanfordSentence.add(new edu.stanford.nlp.ling.Word(word.getValue()));
-        }
-        return stanfordSentence;
-    }
-
     private void addWNMorphyLemmaAnnotations(String corpusPath, int wnVersion)
     {
-        System.out.println("[" + corpusPath + "] Adding lemma annotations with WN " + wnVersion + " morphy...");
+        System.out.println("[" + corpusPath + "] Adding lemma annotations with WordNet Morphy...");
         
-        WordnetHelper wn = WordnetHelper.wn(wnVersion);
         StreamingCorpusModifierSentence inout = new StreamingCorpusModifierSentence()
         {
             public void modifySentence(Sentence sentence)
             {
-                for (Word word : sentence.getWords())
-                {
-                    String lemma = word.getAnnotationValue("lemma");
-                    if (!lemma.isEmpty()) continue;
-                    String pos = POSConverter.toWNPOS(word.getAnnotationValue("pos"));
-                    if (pos.equals("x")) continue;
-                    word.setAnnotation("lemma", wn.morphy(word.getValue(), pos));
-                }
+                lemmatizer.tag(sentence.getWords());
             }
         };
         inout.load(corpusPath);
