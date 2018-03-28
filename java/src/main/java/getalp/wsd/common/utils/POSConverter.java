@@ -1,5 +1,9 @@
 package getalp.wsd.common.utils;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class POSConverter
 {
     public static String toWNPOS(String anyPOS)
@@ -22,13 +26,23 @@ public class POSConverter
         return "x";
     }
     
-    public static String toPTBPOS(String wordnetPOS)
+    public static String toPTBPOS(String anyPOS)
     {
-        wordnetPOS = toWNPOS(wordnetPOS);
-        if (wordnetPOS.equals("n")) return "NN";
-        if (wordnetPOS.equals("v")) return "VB";
-        if (wordnetPOS.equals("a")) return "JJ";
-        if (wordnetPOS.equals("r")) return "RB";
+        anyPOS = toWNPOS(anyPOS);
+        if (anyPOS.equals("n")) return "NN";
+        if (anyPOS.equals("v")) return "VB";
+        if (anyPOS.equals("a")) return "JJ";
+        if (anyPOS.equals("r")) return "RB";
         return "";
+    }
+    
+    private static final Set<String> allPTBPOS = new HashSet<>(Arrays.asList("CC", "CD", "DT", "EX", "FW", "IN", "JJ", "JJR", "JJS", "LS", "MD", 
+                                                                             "NN", "NNS", "NNP", "NNPS", "PDT", "POS", "PRP", "PRP$", "RB", "RBR", 
+                                                                             "RBS", "RP", "SYM", "TO", "UH", "VB", "VBD", "VBG", "VBN", "VBP", "VBZ", 
+                                                                             "WDT", "WP", "WP$", "WRB"));
+    
+    public static boolean isPTBPOS(String anyPOS)
+    {
+        return allPTBPOS.contains(anyPOS);
     }
 }

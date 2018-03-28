@@ -7,12 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import edu.stanford.nlp.ling.HasWord;
-import edu.stanford.nlp.ling.TaggedWord;
-import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import getalp.wsd.common.utils.POSConverter;
 import getalp.wsd.common.utils.RegExp;
-import getalp.wsd.common.utils.StdOutStdErr;
 import getalp.wsd.common.utils.StringUtils;
 import getalp.wsd.common.utils.Wrapper;
 import getalp.wsd.common.wordnet.WordnetHelper;
@@ -28,9 +24,15 @@ import getalp.wsd.ufsac.streaming.modifier.StreamingCorpusModifierWord;
 
 public class OriginalCorpusConverter
 {
-    private CorpusPOSTagger posTagger = new CorpusPOSTagger(false, "stanford_pos");
+    private static final String stanfordPOSAnnotation = "stanford_pos";
+        
+    private static final String posAnnotation = "pos";
     
-    private CorpusLemmatizer lemmatizer = new CorpusLemmatizer();
+    private static final String lemmaAnnotation = "lemma";
+    
+    private CorpusPOSTagger posTagger = new CorpusPOSTagger(false, stanfordPOSAnnotation);
+    
+    private CorpusLemmatizer lemmatizer = new CorpusLemmatizer(lemmaAnnotation);
     
     
     
@@ -50,13 +52,14 @@ public class OriginalCorpusConverter
         removeEmptySentences(corpusPath);
         if (mergeDuplicateSentences)
         {
-            mergeDuplicatedSentences(corpusPath, originalWordnetVersion, newWordnetVersion);
+            mergeDuplicatedSentences(corpusPath, originalWordnetVersion);
         }
         removeInvalidWordnetAnnotations(corpusPath, originalWordnetVersion);
         convertWordnetAnnotations(corpusPath, originalWordnetVersion, newWordnetVersion);
         addStanfordPOSAnnotations(corpusPath);
-        setLemmaAndPOSAnnotationsFromFirstSenseAnnotations(corpusPath, newWordnetVersion);
+        adjustPOSAnnotations(corpusPath, newWordnetVersion);
         addWNMorphyLemmaAnnotations(corpusPath, newWordnetVersion);
+        adjustLemmaAnnotations(corpusPath, newWordnetVersion);
         removeSenseTagsWhereLemmaOrPOSDiffers(corpusPath, newWordnetVersion);
         reorganizeWordAnnotations(corpusPath);
     }
@@ -134,6 +137,94 @@ public class OriginalCorpusConverter
         inout.load(corpusPath);
     }
 
+    private void mergeDuplicatedSentences(String inputPath, int wnVersionToKeep)
+    {
+        System.out.println("[" + inputPath + "] Merging duplicated sentences...");
+
+        Wrapper<Integer> total = new Wrapper<>(0);
+        
+        String senseTagToKeep = "wn" + wnVersionToKeep + "_key";
+        
+        StreamingCorpusModifier inout = new StreamingCorpusModifier()
+        {
+            private Paragraph currentParagraph;
+            
+            private Sentence currentSentence;
+
+            private Map<String, Sentence> realSentences = new LinkedHashMap<>();
+            
+            @Override
+            public void readBeginParagraph(Paragraph paragraph)
+            {
+                currentParagraph = paragraph;
+            }
+            
+            @Override
+            public void readBeginSentence(Sentence sentence)
+            {
+                currentSentence = sentence;
+            }
+            
+            @Override
+            public void readWord(Word word)
+            {
+                currentSentence.addWord(word);
+            }
+            
+            @Override
+            public void readEndSentence()
+            {
+                String sentenceAsString = currentSentence.toString();
+                if (!realSentences.containsKey(sentenceAsString))
+                {
+                    realSentences.put(sentenceAsString, currentSentence);
+                    currentSentence.setParentParagraph(currentParagraph);
+                }
+                else
+                {
+                    total.obj++;
+                    Sentence realSentence = realSentences.get(sentenceAsString);
+                    assert(realSentence.getWords().size() == currentSentence.getWords().size());
+                    for (int i = 0; i < currentSentence.getWords().size(); i++)
+                    {
+                        Word currentSentenceWord = currentSentence.getWords().get(i);
+                        Word realWord = realSentence.getWords().get(i);
+                        if (currentSentenceWord.hasAnnotation(senseTagToKeep))
+                        {
+                            List<String> oldSenseKeys = currentSentenceWord.getAnnotationValues(senseTagToKeep, ";");
+                            List<String> newSenseKeys = new ArrayList<>(realWord.getAnnotationValues(senseTagToKeep, ";"));
+                            for (String sense : oldSenseKeys)
+                            {
+                                if (!newSenseKeys.contains(sense))
+                                {
+                                    newSenseKeys.add(sense);
+                                }
+                            }
+                            realWord.setAnnotation(senseTagToKeep, StringUtils.join(newSenseKeys, ";"));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void readEndParagraph()
+            {
+                super.readBeginParagraph(currentParagraph);
+                for (Sentence sentence : currentParagraph.getSentences())
+                {
+                    super.readBeginSentence(sentence);
+                    sentence.getWords().forEach(super::readWord);
+                    super.readEndSentence();
+                }
+                super.readEndParagraph();
+            }
+        };
+            
+        inout.load(inputPath);
+
+        System.out.println("\tFound " + total.obj + " duplicated sentences in " + inputPath);
+    }
+    
     private void removeInvalidWordnetAnnotations(String corpusPath, int wnVersion)
     {
         System.out.println("[" + corpusPath + "] Removing invalid WN " + wnVersion + " annotations...");
@@ -217,35 +308,6 @@ public class OriginalCorpusConverter
         System.out.println("\tOn a total of " + total.obj + " WN " + wnVersionIn + " annotations, failed to convert " + failed.obj + " to WN " + wnVersionOut);
     }
 
-    private void setLemmaAndPOSAnnotationsFromFirstSenseAnnotations(String inputPath, int wordnetVersion)
-    {
-        System.out.println("[" + inputPath + "] Setting Lemma and POS annotations from first WN " + wordnetVersion + " sense annotation...");
-        String senseTag = "wn" + wordnetVersion + "_key";
-        StreamingCorpusModifierWord inout = new StreamingCorpusModifierWord()
-        {
-            public void modifyWord(Word word)
-            {
-                if (word.hasAnnotation(senseTag))
-                {
-                    String senseKey = word.getAnnotationValue(senseTag);
-                    String senseKeyPOS = POSConverter.toWNPOS(Integer.valueOf(senseKey.substring(senseKey.indexOf("%") + 1, senseKey.indexOf("%") + 2)));
-                    String senseKeyLemma = senseKey.substring(0, senseKey.indexOf("%"));
-                    String currentPOS = POSConverter.toWNPOS(word.getAnnotationValue("pos"));
-                    if (!currentPOS.equals(senseKeyPOS))
-                    {
-                        word.setAnnotation("pos", senseKeyPOS);
-                    }
-                    String currentLemma = word.getAnnotationValue("lemma");
-                    if (!currentLemma.equals(senseKeyLemma))
-                    {
-                        word.setAnnotation("lemma", senseKeyLemma);
-                    }
-                }
-            }
-        };
-        inout.load(inputPath);
-    }
-
     private void addStanfordPOSAnnotations(String corpusPath)
     {
         System.out.println("[" + corpusPath + "] Adding POS annotations with Stanford POS Tagger...");
@@ -255,6 +317,94 @@ public class OriginalCorpusConverter
             public void modifySentence(Sentence sentence)
             {
                 posTagger.tag(sentence.getWords());
+            }
+        };
+        inout.load(corpusPath);
+    }
+
+    private void adjustPOSAnnotations(String corpusPath, int wnVersion)
+    {        
+        System.out.println("[" + corpusPath + "] Adjusting POS annotations...");
+        
+        String senseTag = "wn" + wnVersion + "_key";
+        
+        StreamingCorpusModifierWord inout = new StreamingCorpusModifierWord()
+        {
+            public void modifyWord(Word word)
+            {
+                String stanfordPOS = word.getAnnotationValue(stanfordPOSAnnotation);
+                if (!word.hasAnnotation(posAnnotation) && !word.hasAnnotation(senseTag))
+                {
+                    word.setAnnotation(posAnnotation, stanfordPOS);
+                }
+                if (word.hasAnnotation(posAnnotation))
+                {
+                    String pos = word.getAnnotationValue(posAnnotation);
+                    if (POSConverter.isPTBPOS(pos))
+                    {
+                        // nothing
+                    }
+                    else if (POSConverter.toWNPOS(stanfordPOS).equals(POSConverter.toWNPOS(pos)))
+                    {
+                        word.setAnnotation(posAnnotation, stanfordPOS);
+                    }
+                    else
+                    {
+                        String convertedPOS = POSConverter.toPTBPOS(pos);
+                        if (convertedPOS.isEmpty())
+                        {
+                            word.setAnnotation(posAnnotation, stanfordPOS);
+                        }
+                        else
+                        {
+                            word.setAnnotation(posAnnotation, convertedPOS);
+                        }
+                    }
+                }
+                if (word.hasAnnotation(senseTag))
+                {
+                    List<String> senseKeys = word.getAnnotationValues(senseTag, ";");
+                    String posOfSenseKey = null;
+                    boolean allTheSame = true;
+                    for (String senseKey : senseKeys)
+                    {
+                        int tmpi = senseKey.indexOf("%");
+                        String tmp = POSConverter.toWNPOS(Integer.valueOf(senseKey.substring(tmpi + 1, tmpi + 2)));
+                        if (posOfSenseKey == null)
+                        {
+                            posOfSenseKey = tmp;
+                        }
+                        else if (!tmp.equals(posOfSenseKey))
+                        {
+                            allTheSame = false;
+                        }
+                    }
+                    if (!allTheSame)
+                    {
+                        posOfSenseKey = null;
+                    }
+                    if (posOfSenseKey == null)
+                    {
+                        word.setAnnotation(posAnnotation, stanfordPOS);
+                    }
+                    else if (POSConverter.toWNPOS(stanfordPOS).equals(posOfSenseKey))
+                    {
+                        word.setAnnotation(posAnnotation, stanfordPOS);
+                    }
+                    else
+                    {
+                        String convertedPOS = POSConverter.toPTBPOS(posOfSenseKey);
+                        if (convertedPOS.isEmpty())
+                        {
+                            word.setAnnotation(posAnnotation, stanfordPOS);
+                        }
+                        else
+                        {
+                            word.setAnnotation(posAnnotation, convertedPOS);
+                        }
+                    }
+                }
+                word.removeAnnotation(stanfordPOSAnnotation);
             }
         };
         inout.load(corpusPath);
@@ -273,12 +423,57 @@ public class OriginalCorpusConverter
         };
         inout.load(corpusPath);
     }
+    
+    private void adjustLemmaAnnotations(String corpusPath, int wnVersion)
+    {
+        System.out.println("[" + corpusPath + "] Adjusting lemma annotations...");
+        
+        String senseTag = "wn" + wnVersion + "_key";
+        
+        StreamingCorpusModifierWord inout = new StreamingCorpusModifierWord()
+        {
+            public void modifyWord(Word word)
+            {
+                if (word.hasAnnotation(senseTag))
+                {
+                    List<String> senseKeys = word.getAnnotationValues(senseTag, ";");
+                    String lemmaOfSenseKeys = null;
+                    boolean allTheSame = true;
+                    for (String senseKey : senseKeys)
+                    {
+                        String thisSenseKeyLemma = senseKey.substring(0, senseKey.indexOf("%"));
+                        if (lemmaOfSenseKeys == null)
+                        {
+                            lemmaOfSenseKeys = thisSenseKeyLemma;
+                        }
+                        else if (!lemmaOfSenseKeys.equals(thisSenseKeyLemma))
+                        {
+                            allTheSame = false;
+                        }
+                    }
+                }
+                if (!word.hasAnnotation(lemmaAnnotation))
+                {
+                    
+                }
+                else
+                {
+                    
+                }
+                String lemma = word.getAnnotationValue(lemmaAnnotation);
+                
+            }
+        };
+        inout.load(corpusPath);
+    }
 
     private void removeSenseTagsWhereLemmaOrPOSDiffers(String corpusPath, int wordnetVersion)
     {
         System.out.println("[" + corpusPath + "] Removing WN " + wordnetVersion + " sense tags where lemma or POS differs...");
 
         String senseTag = "wn" + wordnetVersion + "_key";
+        Wrapper<Integer> countRemoved = new Wrapper<>(0);
+        
         StreamingCorpusModifierWord inout = new StreamingCorpusModifierWord()
         {
             public void modifyWord(Word word)
@@ -297,12 +492,18 @@ public class OriginalCorpusConverter
                         {
                             newSenseKeys.add(sense);
                         }
+                        else
+                        {
+                            countRemoved.obj += 1;
+                        }
                     }
                     word.setAnnotation(senseTag, StringUtils.join(newSenseKeys, ";"));
                 }
             }
         };
         inout.load(corpusPath);
+        
+        System.out.println("\tRemoved " + countRemoved.obj + " sense tags");
     }
     
     private void reorganizeWordAnnotations(String corpusPath)
@@ -348,100 +549,5 @@ public class OriginalCorpusConverter
         wordAnnotationOrder.put("wn21_key", 7);
         wordAnnotationOrder.put("wn30_key", 8);
         wordAnnotationOrder.put("wn31_key", 9);
-    }
-
-    private void mergeDuplicatedSentences(String inputPath, int... wnVersionToKeep)
-    {
-        System.out.println("[" + inputPath + "] Merging duplicated sentences...");
-
-        Wrapper<Integer> total = new Wrapper<>(0);
-        
-        List<String> senseTagToKeep = new ArrayList<>();
-        for (int wnVersion : wnVersionToKeep)
-        {
-            senseTagToKeep.add("wn" + wnVersion + "_key");
-        }
-        
-        StreamingCorpusModifier inout = new StreamingCorpusModifier()
-        {
-            private Paragraph currentParagraph;
-            
-            private Sentence currentSentence;
-
-            private Map<String, Sentence> realSentences = new LinkedHashMap<>();
-            
-            @Override
-            public void readBeginParagraph(Paragraph paragraph)
-            {
-                currentParagraph = paragraph;
-            }
-            
-            @Override
-            public void readBeginSentence(Sentence sentence)
-            {
-                currentSentence = sentence;
-            }
-            
-            @Override
-            public void readWord(Word word)
-            {
-                currentSentence.addWord(word);
-            }
-            
-            @Override
-            public void readEndSentence()
-            {
-                String sentenceAsString = currentSentence.toString();
-                if (!realSentences.containsKey(sentenceAsString))
-                {
-                    realSentences.put(sentenceAsString, currentSentence);
-                    currentSentence.setParentParagraph(currentParagraph);
-                }
-                else
-                {
-                    total.obj++;
-                    Sentence realSentence = realSentences.get(sentenceAsString);
-                    assert(realSentence.getWords().size() == currentSentence.getWords().size());
-                    for (int i = 0; i < currentSentence.getWords().size(); i++)
-                    {
-                        Word currentSentenceWord = currentSentence.getWords().get(i);
-                        Word realWord = realSentence.getWords().get(i);
-                        for (String senseTag : senseTagToKeep)
-                        {
-                            if (currentSentenceWord.hasAnnotation(senseTag))
-                            {
-                                List<String> oldSenseKeys = currentSentenceWord.getAnnotationValues(senseTag, ";");
-                                List<String> newSenseKeys = new ArrayList<>(realWord.getAnnotationValues(senseTag, ";"));
-                                for (String sense : oldSenseKeys)
-                                {
-                                    if (!newSenseKeys.contains(sense))
-                                    {
-                                        newSenseKeys.add(sense);
-                                    }
-                                }
-                                realWord.setAnnotation(senseTag, StringUtils.join(newSenseKeys, ";"));
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void readEndParagraph()
-            {
-                super.readBeginParagraph(currentParagraph);
-                for (Sentence sentence : currentParagraph.getSentences())
-                {
-                    super.readBeginSentence(sentence);
-                    sentence.getWords().forEach(super::readWord);
-                    super.readEndSentence();
-                }
-                super.readEndParagraph();
-            }
-        };
-            
-        inout.load(inputPath);
-
-        System.out.println("\tFound " + total.obj + " duplicated sentences in " + inputPath);
     }
 }
