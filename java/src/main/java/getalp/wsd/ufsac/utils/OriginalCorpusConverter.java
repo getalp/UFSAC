@@ -2,6 +2,7 @@ package getalp.wsd.ufsac.utils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ import getalp.wsd.common.utils.StringUtils;
 import getalp.wsd.common.utils.Wrapper;
 import getalp.wsd.common.wordnet.WordnetHelper;
 import getalp.wsd.common.wordnet.WordnetMapping;
-import getalp.wsd.ufsac.converter.CorpusConverter;
+import getalp.wsd.ufsac.converter.UFSACConverter;
 import getalp.wsd.ufsac.core.Annotation;
 import getalp.wsd.ufsac.core.Paragraph;
 import getalp.wsd.ufsac.core.Sentence;
@@ -24,23 +25,21 @@ import getalp.wsd.ufsac.streaming.modifier.StreamingCorpusModifierWord;
 
 public class OriginalCorpusConverter
 {
-    private static final String stanfordPOSAnnotation = "stanford_pos";
+    private final String stanfordPOSAnnotation = "stanford_pos";
         
-    private static final String posAnnotation = "pos";
+    private final String posAnnotation = "pos";
     
-    private static final String lemmaAnnotation = "lemma";
+    private final String lemmaAnnotation = "lemma";
+        
+    private final CorpusPOSTagger posTagger = new CorpusPOSTagger(false, stanfordPOSAnnotation);
     
-    private CorpusPOSTagger posTagger = new CorpusPOSTagger(false, stanfordPOSAnnotation);
+    private final CorpusLemmatizer lemmatizer = new CorpusLemmatizer(lemmaAnnotation, 30);
     
-    private CorpusLemmatizer lemmatizer = new CorpusLemmatizer(lemmaAnnotation);
+    private final Map<String, Integer> wordAnnotationOrder = initMapAnnotationsOrder();
     
-    
-    
-    private Map<String, Integer> wordAnnotationOrder = null;
-    
-    public void convert(CorpusConverter formatConverter, String originalCorpusPath, String ufsacCorpusPath, int originalWordnetVersion, int newWordnetVersion, boolean mergeDuplicateSentences)
+    public void convert(UFSACConverter formatConverter, String originalCorpusPath, String ufsacCorpusPath, int originalWordnetVersion, int newWordnetVersion, boolean mergeDuplicateSentences)
     {
-        System.out.println("[" + ufsacCorpusPath + "] Converting...");
+        System.out.println("[" + ufsacCorpusPath + "] Converting format...");
         formatConverter.convert(originalCorpusPath, ufsacCorpusPath, originalWordnetVersion);
         postProcess(ufsacCorpusPath, originalWordnetVersion, newWordnetVersion, mergeDuplicateSentences);
     }
@@ -60,7 +59,7 @@ public class OriginalCorpusConverter
         adjustPOSAnnotations(corpusPath, newWordnetVersion);
         addWNMorphyLemmaAnnotations(corpusPath, newWordnetVersion);
         adjustLemmaAnnotations(corpusPath, newWordnetVersion);
-        removeSenseTagsWhereLemmaOrPOSDiffers(corpusPath, newWordnetVersion);
+        removeInconsistentSenseTags(corpusPath, newWordnetVersion);
         reorganizeWordAnnotations(corpusPath);
     }
 
@@ -451,25 +450,19 @@ public class OriginalCorpusConverter
                             allTheSame = false;
                         }
                     }
+                    if (allTheSame)
+                    {
+                        word.setAnnotation(lemmaAnnotation, lemmaOfSenseKeys);
+                    }
                 }
-                if (!word.hasAnnotation(lemmaAnnotation))
-                {
-                    
-                }
-                else
-                {
-                    
-                }
-                String lemma = word.getAnnotationValue(lemmaAnnotation);
-                
             }
         };
         inout.load(corpusPath);
     }
 
-    private void removeSenseTagsWhereLemmaOrPOSDiffers(String corpusPath, int wordnetVersion)
+    private void removeInconsistentSenseTags(String corpusPath, int wordnetVersion)
     {
-        System.out.println("[" + corpusPath + "] Removing WN " + wordnetVersion + " sense tags where lemma or POS differs...");
+        System.out.println("[" + corpusPath + "] Removing WN " + wordnetVersion + " inconsistent sense tags...");
 
         String senseTag = "wn" + wordnetVersion + "_key";
         Wrapper<Integer> countRemoved = new Wrapper<>(0);
@@ -537,8 +530,9 @@ public class OriginalCorpusConverter
         inout.load(corpusPath);
     }
 
-    private void initMapAnnotationsOrder()
+    private static Map<String, Integer> initMapAnnotationsOrder()
     {
+        Map<String, Integer> wordAnnotationOrder = new HashMap<>();
         wordAnnotationOrder.put("surface_form", 0);
         wordAnnotationOrder.put("lemma", 1);
         wordAnnotationOrder.put("pos", 2);
@@ -549,5 +543,6 @@ public class OriginalCorpusConverter
         wordAnnotationOrder.put("wn21_key", 7);
         wordAnnotationOrder.put("wn30_key", 8);
         wordAnnotationOrder.put("wn31_key", 9);
+        return wordAnnotationOrder;
     }
 }

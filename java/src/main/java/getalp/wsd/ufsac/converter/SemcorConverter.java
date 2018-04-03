@@ -15,7 +15,7 @@ import getalp.wsd.common.utils.StringUtils;
 import getalp.wsd.ufsac.core.*;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterDocument;
 
-public class SemcorConverter extends DefaultHandler implements CorpusConverter
+public class SemcorConverter extends DefaultHandler implements UFSACConverter
 {
 	private StreamingCorpusWriterDocument out;
 	

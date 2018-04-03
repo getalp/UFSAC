@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Semeval2007Task7Converter extends DefaultHandler implements CorpusConverter
+public class Semeval2007Task7Converter extends DefaultHandler implements UFSACConverter
 {
 	private StreamingCorpusWriterDocument out;
 

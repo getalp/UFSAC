@@ -15,7 +15,7 @@ import getalp.wsd.ufsac.core.Sentence;
 import getalp.wsd.ufsac.core.Word;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterDocument;
 
-public class Senseval3Task1Converter extends SAXBasicHandler implements CorpusConverter
+public class Senseval3Task1Converter extends SAXBasicHandler implements UFSACConverter
 {
     private StreamingCorpusWriterDocument out;
     

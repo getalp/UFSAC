@@ -12,15 +12,28 @@ import getalp.wsd.ufsac.core.Word;
 public class CorpusLemmatizer
 {
     private String lemmaAnnotationName;
+    
+    private WordnetHelper wn = WordnetHelper.wn();
 
     public CorpusLemmatizer()
     {
-        this("lemma");
+        this("lemma", 30);
     }
 
     public CorpusLemmatizer(String lemmaAnnotationName)
     {
+        this(lemmaAnnotationName, 30);
+    }
+
+    public CorpusLemmatizer(int wnVersion)
+    {
+        this("lemma", wnVersion);
+    }
+
+    public CorpusLemmatizer(String lemmaAnnotationName, int wnVersion)
+    {
         this.lemmaAnnotationName = lemmaAnnotationName;
+        this.wn = WordnetHelper.wn(wnVersion);
     }
 
     public void tag(List<Word> words)
@@ -29,8 +42,7 @@ public class CorpusLemmatizer
     }
 
     private void addWNMorphyLemmaAnnotations(List<Word> words)
-    {        
-        WordnetHelper wn = WordnetHelper.wn();
+    {
         for (Word word : words)
         {
             if (word.hasAnnotation(lemmaAnnotationName)) continue;

@@ -20,7 +20,7 @@ import getalp.wsd.ufsac.core.Sentence;
 import getalp.wsd.ufsac.core.Word;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterSentence;
 
-public class MASCConverter extends DefaultHandler implements CorpusConverter
+public class MASCConverter extends DefaultHandler implements UFSACConverter
 {
 	private StreamingCorpusWriterSentence out;
 

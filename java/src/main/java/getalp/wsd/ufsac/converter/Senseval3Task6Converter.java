@@ -13,7 +13,7 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Senseval3Task6Converter extends DefaultHandler implements CorpusConverter
+public class Senseval3Task6Converter extends DefaultHandler implements UFSACConverter
 {
     private Corpus currentCorpus;
 

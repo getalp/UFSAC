@@ -10,7 +10,7 @@ import getalp.wsd.ufsac.core.Sentence;
 import getalp.wsd.ufsac.core.Word;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterSentence;
 
-public class DSOConverter implements CorpusConverter
+public class DSOConverter implements UFSACConverter
 {
     private WordnetHelper wn;
     

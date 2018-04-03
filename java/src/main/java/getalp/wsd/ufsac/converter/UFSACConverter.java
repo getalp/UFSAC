@@ -1,6 +1,6 @@
 package getalp.wsd.ufsac.converter;
 
-public interface CorpusConverter
+public interface UFSACConverter
 {
     public void convert(String originalCorpusPath, String newCorpusPath, int wordnetVersion);
 }

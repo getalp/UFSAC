@@ -10,7 +10,7 @@ import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterSentence;
 
 import org.xml.sax.helpers.DefaultHandler;
 
-public class WNGTConverter extends DefaultHandler implements CorpusConverter
+public class WNGTConverter extends DefaultHandler implements UFSACConverter
 {
 	private StreamingCorpusWriterSentence out;
 

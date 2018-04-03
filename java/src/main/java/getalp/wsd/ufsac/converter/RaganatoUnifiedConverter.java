@@ -19,7 +19,7 @@ import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterDocument;
 
 import org.xml.sax.helpers.DefaultHandler;
 
-public class RaganatoUnifiedConverter extends DefaultHandler implements CorpusConverter
+public class RaganatoUnifiedConverter extends DefaultHandler implements UFSACConverter
 {
 	private StreamingCorpusWriterDocument out;
 

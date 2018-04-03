@@ -13,7 +13,7 @@ import getalp.wsd.common.xml.SAXEntityResolverIgnoringDTD;
 import getalp.wsd.ufsac.core.*;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterSentence;
 
-public class OMSTIConverter extends DefaultHandler implements CorpusConverter
+public class OMSTIConverter extends DefaultHandler implements UFSACConverter
 {
     private Sentence currentSentence;
 
