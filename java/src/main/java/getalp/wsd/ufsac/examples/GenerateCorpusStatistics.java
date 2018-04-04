@@ -1,3 +1,4 @@
+package getalp.wsd.ufsac.examples;
 
 import getalp.wsd.common.utils.POSConverter;
 import getalp.wsd.common.utils.Wrapper;
@@ -8,7 +9,7 @@ import getalp.wsd.ufsac.streaming.reader.StreamingCorpusReader;
 public class GenerateCorpusStatistics
 {
     /**
-     * Usage: java GenerateCorpusStatistics [corpus]...
+     * Usage: java getalp.wsd.ufsac.examples.GenerateCorpusStatistics [corpus]...
      */
     public static void main(String[] corpusPaths) throws Exception
     {

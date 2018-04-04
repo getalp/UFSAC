@@ -1,10 +1,11 @@
+package getalp.wsd.ufsac.examples;
 import getalp.wsd.ufsac.converter.*;
 import getalp.wsd.ufsac.utils.OriginalCorpusConverter;
 
 public class ConvertOriginalCorpora
 {
     /**
-     * Usage: java ConvertOriginalCorpora
+     * Usage: java getalp.wsd.ufsac.examples.ConvertOriginalCorpora
      * 
      * Note that you must manually remove the lines of code that you do not need if you want to convert specific corpora.
      * This is just an example of script that was used to produce all the corpora described in the article.
@@ -13,13 +14,9 @@ public class ConvertOriginalCorpora
     {
         OriginalCorpusConverter converter = new OriginalCorpusConverter();
         
-        converter.convert(new Senseval1Converter(), "data/original_corpus/senseval1", "data/corpus/senseval1.xml", 16, 30, false);
-
         converter.convert(new Senseval2Converter(), "data/original_corpus/mihalcea/senseval2", "data/corpus/senseval2.xml", 171, 30, false);
 
         converter.convert(new Senseval3Task1Converter(), "data/original_corpus/mihalcea/senseval3", "data/corpus/senseval3task1.xml", 171, 30, false);
-
-        converter.convert(new Senseval3Task6Converter(), "data/original_corpus/senseval3task6", "data/corpus/senseval3task6.xml", 171, 30, false);
         
         converter.convert(new Semeval2007Task7Converter(), "data/original_corpus/semeval/2007/task7", "data/corpus/semeval2007task7.xml", 21, 30, false);
         
