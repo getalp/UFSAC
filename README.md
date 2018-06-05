@@ -17,8 +17,8 @@ This repository contains:
 ### Version 1.0.0 (May 2018)
 
 Original version which contains the following corpora:
-- Semcor
-- WordNet Gloss Tagged
+- Semcor (original corpus: <http://web.eecs.umich.edu/~mihalcea/downloads/semcor/semcor1.6.tar.gz>)
+- WordNet Gloss Tagged (original corpus: <http://wordnetcode.princeton.edu/glosstag-files/WordNet-3.0-glosstag.tar.bz2>)
 - MASC
 - OMSTI
 - SensEval 2
