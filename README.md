@@ -17,18 +17,18 @@ This repository contains:
 ### Version 1.0.0 (May 2018)
 
 Original version which contains the following corpora:
-- Semcor (original corpus: <http://web.eecs.umich.edu/~mihalcea/downloads/semcor/semcor1.6.tar.gz>)
-- WordNet Gloss Tagged (original corpus: <http://wordnetcode.princeton.edu/glosstag-files/WordNet-3.0-glosstag.tar.bz2>)
-- MASC
-- OMSTI
-- SensEval 2
-- SensEval 3
-- SemEval 2007 task 07
-- SemEval 2007 task 17
-- SemEval 2013 task 12
-- SemEval 2015 task 13
+- Semcor (original data: <http://web.eecs.umich.edu/~mihalcea/downloads/semcor/semcor1.6.tar.gz>)
+- WordNet Gloss Tagged (original data: <http://wordnetcode.princeton.edu/glosstag-files/WordNet-3.0-glosstag.tar.bz2>)
+- MASC (original data: <https://github.com/google-research-datasets/word_sense_disambigation_corpora>)
+- OMSTI (original data: <http://www.comp.nus.edu.sg/~nlp/sw/one-million-sense-tagged-instances-wn30.tar.gz>)
+- SensEval 2 (original data: <http://www.hipposmond.com/senseval2/Results/senseval2-corpora.tgz>)
+- SensEval 3 (original data: <http://web.eecs.umich.edu/~mihalcea/senseval/senseval3/data/EnglishAW/EnglishAW.test.tar.gz>)
+- SemEval 2007 task 07 (original data: <http://nlp.cs.swarthmore.edu/semeval/tasks/task07/data.shtml>)
+- SemEval 2007 task 17 (original data: <http://nlp.cs.swarthmore.edu/semeval/tasks/task17/data.shtml>)
+- SemEval 2013 task 12 (original data: <https://www.cs.york.ac.uk/semeval-2013/task12/index.php%3Fid=data.html>)
+- SemEval 2015 task 13 (original data: <http://alt.qcri.org/semeval2015/task13/index.php?id=data-and-tools>)
 
 Plus the code to produce the UFSAC version from the original version of the following corpora:
-- DSO
-- Ontonotes
+- DSO (purchase here: <https://catalog.ldc.upenn.edu/LDC97T12>)
+- Ontonotes (freely available here: <https://catalog.ldc.upenn.edu/LDC2013T19>)
 
