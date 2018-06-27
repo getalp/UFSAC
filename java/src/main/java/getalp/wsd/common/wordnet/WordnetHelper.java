@@ -28,6 +28,8 @@ public class WordnetHelper
     private Map<String, Sentence> synsetToGloss;
 
     private Map<String, List<String>> senseToRelatedSynsets;
+
+    private Map<String, List<String>> synsetToHypernymsSynsets;
     
     private Map<String, List<String>> wordKeyToSenseList;
 
@@ -116,6 +118,11 @@ public class WordnetHelper
     public List<String> getRelatedSynsetsKeyFromSenseKey(String senseKey)
     {
         return senseToRelatedSynsets.get(senseKey);
+    }
+    
+    public List<String> getHypernymSynsetKeysFromSynsetKey(String synsetKey)
+    {
+        return synsetToHypernymsSynsets.get(synsetKey);
     }
     
     public Collection<String> getVocabulary()
@@ -220,6 +227,7 @@ public class WordnetHelper
         synsetToSenseList = new HashMap<>();
         synsetToGloss = new HashMap<>();
         senseToRelatedSynsets = new HashMap<>();
+        synsetToHypernymsSynsets = new HashMap<>();
         wordKeyToSenseList = new HashMap<>();
         senseKeyToSenseNumber = new HashMap<>();
         senseNumberToSenseKey = new HashMap<>();
@@ -303,6 +311,8 @@ public class WordnetHelper
             senseToSynset.put(senseKey, synsetKey);
             List<String> relatedSynsets = loadRelations(is, iw);
             senseToRelatedSynsets.put(senseKey, relatedSynsets);
+            List<String> hypernyms = loadHypernyms(is);
+            synsetToHypernymsSynsets.put(synsetKey, hypernyms);
             if (wordKeyToSenseList.containsKey(wordKey))
             {
                 wordKeyToSenseList.get(wordKey).add(senseKey);
@@ -344,6 +354,25 @@ public class WordnetHelper
         }
 
         return relatedSynsets;
+    }
+
+    private List<String> loadHypernyms(ISynset synset)
+    {
+        List<String> hypernyms = new ArrayList<>();
+        // semantic relations
+        for (Map.Entry<IPointer, List<ISynsetID>> iPointerListEntry : synset.getRelatedMap().entrySet()) 
+        {
+            if (iPointerListEntry.getKey().getSymbol().equals("@"))
+            {
+                for (ISynsetID iwd : iPointerListEntry.getValue()) 
+                {
+                    ISynset relatedSynset = wordnet.getSynset(iwd);
+                    String relatedSynsetKey = "" + relatedSynset.getPOS().getTag() + relatedSynset.getOffset();
+                    hypernyms.add(relatedSynsetKey);
+                }
+            }
+        }
+        return hypernyms;
     }
 
 }
