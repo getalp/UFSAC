@@ -30,21 +30,30 @@ public class OriginalCorpusConverter
     private final String posAnnotation = "pos";
     
     private final String lemmaAnnotation = "lemma";
-        
-    private final CorpusPOSTagger posTagger = new CorpusPOSTagger(false, stanfordPOSAnnotation);
-    
-    private final CorpusLemmatizer lemmatizer = new CorpusLemmatizer(lemmaAnnotation, 30);
-    
+
     private final Map<String, Integer> wordAnnotationOrder = initMapAnnotationsOrder();
     
-    public void convert(UFSACConverter formatConverter, String originalCorpusPath, String ufsacCorpusPath, int originalWordnetVersion, int newWordnetVersion, boolean mergeDuplicateSentences)
+    private CorpusPOSTagger posTagger;
+    
+    private CorpusLemmatizer lemmatizer;
+    
+    private int targetWordnetVersion;
+
+    public OriginalCorpusConverter(int targetWNVersion)
+    {
+        this.posTagger = new CorpusPOSTagger(false, stanfordPOSAnnotation);
+        this.lemmatizer = new CorpusLemmatizer(lemmaAnnotation, targetWNVersion);
+        this.targetWordnetVersion = targetWNVersion;
+    }
+    
+    public void convert(UFSACConverter formatConverter, String originalCorpusPath, String ufsacCorpusPath, int originalWordnetVersion, boolean mergeDuplicateSentences)
     {
         System.out.println("[" + ufsacCorpusPath + "] Converting format...");
         formatConverter.convert(originalCorpusPath, ufsacCorpusPath, originalWordnetVersion);
-        postProcess(ufsacCorpusPath, originalWordnetVersion, newWordnetVersion, mergeDuplicateSentences);
+        postProcess(ufsacCorpusPath, originalWordnetVersion, mergeDuplicateSentences);
     }
         
-    private void postProcess(String corpusPath, int originalWordnetVersion, int newWordnetVersion, boolean mergeDuplicateSentences)
+    private void postProcess(String corpusPath, int originalWordnetVersion, boolean mergeDuplicateSentences)
     {
         cleanWords(corpusPath);
         removeEmptyWords(corpusPath);
@@ -54,12 +63,12 @@ public class OriginalCorpusConverter
             mergeDuplicatedSentences(corpusPath, originalWordnetVersion);
         }
         removeInvalidWordnetAnnotations(corpusPath, originalWordnetVersion);
-        convertWordnetAnnotations(corpusPath, originalWordnetVersion, newWordnetVersion);
+        convertWordnetAnnotations(corpusPath, originalWordnetVersion, targetWordnetVersion);
         addStanfordPOSAnnotations(corpusPath);
-        adjustPOSAnnotations(corpusPath, newWordnetVersion);
-        addWNMorphyLemmaAnnotations(corpusPath, newWordnetVersion);
-        adjustLemmaAnnotations(corpusPath, newWordnetVersion);
-        removeInconsistentSenseTags(corpusPath, newWordnetVersion);
+        adjustPOSAnnotations(corpusPath, targetWordnetVersion);
+        addWNMorphyLemmaAnnotations(corpusPath, targetWordnetVersion);
+        adjustLemmaAnnotations(corpusPath, targetWordnetVersion);
+        removeInconsistentSenseTags(corpusPath, targetWordnetVersion);
         reorganizeWordAnnotations(corpusPath);
     }
 

@@ -13,7 +13,7 @@ public class CorpusLemmatizer
 {
     private String lemmaAnnotationName;
     
-    private WordnetHelper wn = WordnetHelper.wn();
+    private WordnetHelper wn;
 
     public CorpusLemmatizer()
     {
