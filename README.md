@@ -8,11 +8,16 @@ The full article is available at the following URL: <https://hal.archives-ouvert
 
 This repository contains:
 
-* The sense annotated corpora in UFSAC, the format described in the paper, in the folder **`corpus`**. Note that every corpus has been compressed using the tool `xz` and therefore needs to be decompressed with `unxz` or similar.
+* The sense annotated corpora in UFSAC, the format described in the paper, in the folder **`corpus`**. Note that the files have been compressed using the tool `xz` and therefore needs to be decompressed with `unxz` or similar.
 
 * The source code of the Java API and the scripts described in the paper, in the folder **`java`**.
 
 ## Version history
+
+### Version 1.1.0 (June 2018)
+
+- Fix a problem where some POS tags did not follow the PTB convention
+- Merge the "omsti_part{0,1,2,3,4}.xml" files in one single "omsti.xml" file
 
 ### Version 1.0.0 (May 2018)
 
