@@ -8,7 +8,7 @@ The full article is available at the following URL: <https://hal.archives-ouvert
 
 This repository contains:
 
-* The sense annotated corpora in UFSAC, the format described in the paper, in the folder **`corpus`** (*and also available through direct links, see below*). Note that the files have been compressed using the tool `xz` and therefore needs to be decompressed with `unxz` or similar.
+* The sense annotated corpora in UFSAC, the format described in the paper, in the folder **`corpus`** (**also available through direct links, see below**). Note that the files have been compressed using the tool `xz` and therefore needs to be decompressed with `unxz` or similar.
 
 * The source code of the Java API and the scripts described in the paper, in the folder **`java`**.
 
