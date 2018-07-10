@@ -10,10 +10,17 @@ import getalp.wsd.ufsac.core.*;
 public class StreamingCorpusWriter
 {
     private BufferedWriter out;
+    
+    private boolean flushAfterEveryWrittenEntity;
 
     public StreamingCorpusWriter()
     {
+        this(false);
+    }
 
+    public StreamingCorpusWriter(boolean flushAfterEveryWrittenEntity)
+    {
+        this.flushAfterEveryWrittenEntity = flushAfterEveryWrittenEntity;
     }
 
     public void writeBeginCorpus()
@@ -140,7 +147,7 @@ public class StreamingCorpusWriter
         write("<" + entityName);
         writeAnnotations(annotations);
         write("/>\n");
-        flush();
+        if (flushAfterEveryWrittenEntity) flush();
     }
 
     private void writeBeginEntity(int indentLevel, String entityName, List<Annotation> annotations)
@@ -149,14 +156,14 @@ public class StreamingCorpusWriter
         write("<" + entityName);
         writeAnnotations(annotations);
         write(">\n");
-        flush();
+        if (flushAfterEveryWrittenEntity) flush();
     }
 
     private void writeEndEntity(int indentLevel, String entityName)
     {
         write(XMLHelper.getIndent(indentLevel));
         write("</" + entityName + ">\n");
-        flush();
+        if (flushAfterEveryWrittenEntity) flush();
     }
     
     private void writeAnnotations(List<Annotation> annotations)
