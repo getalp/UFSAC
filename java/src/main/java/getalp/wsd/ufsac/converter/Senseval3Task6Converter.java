@@ -52,7 +52,7 @@ public class Senseval3Task6Converter implements UFSACConverter
             sensesById = new HashMap<>();
             loadMappingForVerbs(inpath + "/" + trainOrTest + "/EnglishLS.dictionary.mapping.xml");
             loadKeys(inpath + "/" + trainOrTest + "/EnglishLS." + trainOrTest + ".key");
-            loadCorpus(inpath + "/" + trainOrTest + "/EnglishLS." + trainOrTest, outpath);
+            loadCorpus(inpath + "/" + trainOrTest + "/EnglishLS." + trainOrTest, outpath, wnVersion);
         } 
         catch (Exception e)
         {
@@ -148,7 +148,7 @@ public class Senseval3Task6Converter implements UFSACConverter
         br.close();
     }
 
-    private void loadCorpus(String inpath, String outpath) throws Exception
+    private void loadCorpus(String inpath, String outpath, int wnVersion) throws Exception
     {
     	BufferedReader reader = Files.newBufferedReader(Paths.get(inpath));
     	String tmpfilepath = File.createTemporaryFileName();
@@ -272,7 +272,7 @@ public class Senseval3Task6Converter implements UFSACConverter
                     {
 	                    w.setAnnotation("lemma", SenseKeyUtils.extractLemmaFromSenseKey(senseKeys.get(0)));
 	                    w.setAnnotation("pos", SenseKeyUtils.extractPOSFromSenseKey(senseKeys.get(0)));
-	                    w.setAnnotation("wn171_key", StringUtils.join(senseKeys, ";"));
+	                    w.setAnnotation("wn" + wnVersion + "_key", StringUtils.join(senseKeys, ";"));
                     }
                     resetAndStartSaveCharacters();
                 }

@@ -58,6 +58,7 @@ public class OriginalCorpusConverter
         cleanWords(corpusPath);
         removeEmptyWords(corpusPath);
         removeEmptySentences(corpusPath);
+        normalizePunctuation(corpusPath);
         if (mergeDuplicateSentences)
         {
             mergeDuplicatedSentences(corpusPath, originalWordnetVersion);
@@ -86,6 +87,66 @@ public class OriginalCorpusConverter
             }
         };
         inout.load(corpusPath);
+    }
+    
+    private void normalizePunctuation(String corpusPath)
+    {
+        System.out.println("[" + corpusPath + "] Normalizing punctuation...");
+        StreamingCorpusModifierWord inout = new StreamingCorpusModifierWord()
+        {
+            @Override
+            public void modifyWord(Word word)
+            {
+                String wordValue = word.getValue();
+                wordValue = cleanBrackets(wordValue);
+                wordValue = normalizePunctuationInString(wordValue);
+                word.setValue(wordValue);
+            }
+        };
+        inout.load(corpusPath);
+    }
+    
+    private static String cleanBrackets(String word)
+    {
+        if (word.equals("-LCB-"))
+        {
+            word = "{";
+        } 
+        else if (word.equals("-LRB-"))
+        {
+            word = "(";
+        } 
+        else if (word.equals("-LSB-"))
+        {
+            word = "[";
+        } 
+        else if (word.equals("-RCB-"))
+        {
+            word = "}";
+        } 
+        else if (word.equals("-RRB-"))
+        {
+            word = ")";
+        } 
+        else if (word.equals("-RSB-"))
+        {
+            word = "]";
+        }
+        return word;
+    }
+    
+    private static String normalizePunctuationInString(String word)
+    {
+        word = word.replaceAll("`", "'");
+        word = word.replaceAll("''", "\"");
+        word = word.replaceAll("„", "\"");
+        word = word.replaceAll("“", "\"");
+        word = word.replaceAll("‘", "\"");
+        word = word.replaceAll("´´", "\"");
+        word = word.replaceAll("«", "\"");
+        word = word.replaceAll("»", "\"");
+        word = word.replaceAll("–", "-");
+        return word;
     }
     
     private void removeEmptyWords(String corpusPath)

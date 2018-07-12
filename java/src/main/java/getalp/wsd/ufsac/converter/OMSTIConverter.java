@@ -9,27 +9,16 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
 import getalp.wsd.common.utils.PercentProgressDisplayer;
+import getalp.wsd.common.utils.RegExp;
+import getalp.wsd.common.utils.SenseKeyUtils;
+import getalp.wsd.common.xml.SAXBasicHandler;
 import getalp.wsd.common.xml.SAXEntityResolverIgnoringDTD;
 import getalp.wsd.ufsac.core.*;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterSentence;
 
-public class OMSTIConverter extends DefaultHandler implements UFSACConverter
+public class OMSTIConverter implements UFSACConverter
 {
-    private Sentence currentSentence;
-
-    private boolean saveCharacters;
-
-    private String currentCharacters;
-
-    private String currentPos;
-
-    private String currentLemma;
-    
-    private Map<String, String> currentIdToSenseKey;
-    
-    private String currentSenseKey;
-    
-    private boolean ignoreCurrentInstance;
+    private Map<String, String> senseKeysById;
     
     private StreamingCorpusWriterSentence out;
     
@@ -57,7 +46,6 @@ public class OMSTIConverter extends DefaultHandler implements UFSACConverter
 
     private void loadPOS(String path, String pos) throws Exception
     {
-        currentPos = pos;
         Set<String> words = new HashSet<>();
         Stream<Path> paths = Files.list(Paths.get(path));
         paths.forEach(filePath -> 
@@ -79,13 +67,17 @@ public class OMSTIConverter extends DefaultHandler implements UFSACConverter
     
     private void loadKeys(String path) throws Exception
     {
-        currentIdToSenseKey = new HashMap<>();
+        senseKeysById = new HashMap<>();
         BufferedReader br = new BufferedReader(new FileReader(path));
         String line;
         while ((line = br.readLine()) != null) 
         {
-           String[] tokens = line.split("\\s+");
-           currentIdToSenseKey.put(tokens[1], tokens[2].replaceAll("%5", "%3"));
+           String[] tokens = line.split(RegExp.anyWhiteSpaceGrouped.pattern());
+           senseKeysById.put(tokens[1], tokens[2].replaceAll("%5", "%3"));
+           if (tokens.length > 3)
+           {
+               System.out.println("Warning : OMSTI sense key ignored");
+           }
         }
         br.close();
     }
@@ -93,127 +85,64 @@ public class OMSTIConverter extends DefaultHandler implements UFSACConverter
     public void loadFile(String path) throws Exception
     {
         XMLReader saxReader = XMLReaderFactory.createXMLReader();
-        saxReader.setContentHandler(this);
+        saxReader.setContentHandler(new SAXBasicHandler()
+        {
+            private Sentence currentSentence;
+
+            private String currentSenseKey;
+            
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException
+            {
+                if (localName.equals("instance"))
+                {
+                    currentSenseKey = senseKeysById.get(atts.getValue("id"));
+                    currentSentence = new Sentence();
+                    resetAndStartSaveCharacters();
+                }
+                else if (localName.equals("head"))
+                {
+                    List<String> wordsBefore = Arrays.asList(getAndStopSaveCharacters().split(RegExp.anyWhiteSpaceGrouped.pattern()));
+                    wordsBefore = wordsBefore.subList(wordsBefore.lastIndexOf(".") + 1, wordsBefore.size());
+                    for (String wordBefore : wordsBefore)
+                    {
+                        Word w = new Word(currentSentence);
+                        w.setValue(wordBefore);
+                    }
+                    resetAndStartSaveCharacters();
+                }
+            }
+
+            @Override
+            public void endElement(String uri, String localName, String qName) throws SAXException
+            {
+                if (localName.equals("instance"))
+                {
+                    List<String> wordsAfter = Arrays.asList(getAndStopSaveCharacters().split(RegExp.anyWhiteSpaceGrouped.pattern()));
+                    int indexOfFirstDot = wordsAfter.indexOf(".");
+                    if (indexOfFirstDot == -1) indexOfFirstDot = wordsAfter.size();
+                    wordsAfter = wordsAfter.subList(0, indexOfFirstDot);
+                    for (String wordAfter : wordsAfter)
+                    {
+                        Word w = new Word(currentSentence);
+                        w.setValue(wordAfter);
+                    }
+                    Word w = new Word(currentSentence);
+                    w.setValue(".");
+                    out.writeSentence(currentSentence);
+                }
+                else if (localName.equals("head"))
+                {
+                    Word w = new Word(currentSentence);
+                    w.setValue(getAndStopSaveCharacters());
+                    w.setAnnotation("lemma", SenseKeyUtils.extractLemmaFromSenseKey(currentSenseKey));
+                    w.setAnnotation("pos", SenseKeyUtils.extractPOSFromSenseKey(currentSenseKey));
+                    w.setAnnotation("wn" + wnVersion + "_key", currentSenseKey);
+                    resetAndStartSaveCharacters();
+                }
+            }
+        });
         saxReader.setEntityResolver(new SAXEntityResolverIgnoringDTD());
         saxReader.parse(path);
     }
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException
-    {
-        if (localName.equals("instance"))
-        {
-            String currentDocSrc = atts.getValue("docsrc");
-            if (currentDocSrc.contains("br-"))
-            {
-                ignoreCurrentInstance = true;
-            }
-            else
-            {
-                ignoreCurrentInstance = false;
-                String currentId = atts.getValue("id");
-                currentSenseKey = currentIdToSenseKey.get(currentId);
-                currentLemma = currentSenseKey.substring(0, currentSenseKey.indexOf("%"));
-                currentSentence = new Sentence();
-                saveCharacters = true;
-                currentCharacters = "";
-            }
-        }
-        else if (localName.equals("head") && !ignoreCurrentInstance)
-        {
-            String[] wordsBefore = currentCharacters.split("\\s+");
-            int indexOfLastDot = -1;
-            for (int i = 0 ; i < wordsBefore.length ; i++)
-            {
-                if (wordsBefore[i].equals("."))
-                {
-                    indexOfLastDot = i;
-                }
-            }
-            for (int i = indexOfLastDot + 1 ; i < wordsBefore.length ; i++)
-            {
-                if (wordsBefore[i].isEmpty()) continue;
-                Word w = new Word(currentSentence);
-                w.setValue(cleanWord(wordsBefore[i]));
-            }
-            currentCharacters = "";
-        }
-    }
-
-    @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException
-    {
-        if (localName.equals("instance") && !ignoreCurrentInstance)
-        {
-            String[] wordsAfter = currentCharacters.split("\\s+");
-            int indexOfFirstDot = wordsAfter.length;
-            for (int i = wordsAfter.length - 1 ; i >= 0 ; i--)
-            {
-                if (wordsAfter[i].equals("."))
-                {
-                    indexOfFirstDot = i;
-                }
-            }
-            for (int i = 0 ; i < indexOfFirstDot ; i++)
-            {
-                if (wordsAfter[i].isEmpty()) continue;
-                Word w = new Word(currentSentence);
-                w.setValue(cleanWord(wordsAfter[i]));
-            }
-            Word w = new Word(currentSentence);
-            w.setValue(".");
-            currentCharacters = "";
-            saveCharacters = false;
-            out.writeSentence(currentSentence);
-        }
-        else if (localName.equals("head") && !ignoreCurrentInstance)
-        {
-            Word w = new Word(currentSentence);
-            w.setValue(cleanWord(currentCharacters));
-            w.setAnnotation("lemma", currentLemma);
-            w.setAnnotation("pos", currentPos);
-            w.setAnnotation("wn" + wnVersion + "_key", currentSenseKey);
-            currentCharacters = "";
-        }
-    }
-
-    @Override
-    public void characters(char[] ch, int start, int length) throws SAXException
-    {
-        if (saveCharacters)
-        {
-            currentCharacters += new String(ch, start, length);
-        }
-    }
-    
-    public static String cleanWord(String wordSurfaceForm)
-    {
-        wordSurfaceForm = wordSurfaceForm.trim();
-        if (wordSurfaceForm.equals("-LCB-"))
-        {
-            wordSurfaceForm = "{";
-        } 
-        else if (wordSurfaceForm.equals("-LRB-"))
-        {
-            wordSurfaceForm = "(";
-        } 
-        else if (wordSurfaceForm.equals("-LSB-"))
-        {
-            wordSurfaceForm = "[";
-        } 
-        else if (wordSurfaceForm.equals("-RCB-"))
-        {
-            wordSurfaceForm = "}";
-        } 
-        else if (wordSurfaceForm.equals("-RRB-"))
-        {
-            wordSurfaceForm = ")";
-        } 
-        else if (wordSurfaceForm.equals("-RSB-"))
-        {
-            wordSurfaceForm = "]";
-        }
-        return wordSurfaceForm;
-    }
-
 }
