@@ -11,6 +11,7 @@ import org.xml.sax.helpers.*;
 import getalp.wsd.common.utils.PercentProgressDisplayer;
 import getalp.wsd.common.utils.RegExp;
 import getalp.wsd.common.utils.SenseKeyUtils;
+import getalp.wsd.common.utils.Utils;
 import getalp.wsd.common.xml.SAXBasicHandler;
 import getalp.wsd.common.xml.SAXEntityResolverIgnoringDTD;
 import getalp.wsd.ufsac.core.*;
@@ -103,7 +104,7 @@ public class OMSTIConverter implements UFSACConverter
                 else if (localName.equals("head"))
                 {
                     List<String> wordsBefore = Arrays.asList(getAndStopSaveCharacters().split(RegExp.anyWhiteSpaceGrouped.pattern()));
-                    wordsBefore = wordsBefore.subList(wordsBefore.lastIndexOf(".") + 1, wordsBefore.size());
+                    wordsBefore = Utils.subListStartingAfterLastEndOfSentenceMarker(wordsBefore);
                     for (String wordBefore : wordsBefore)
                     {
                         Word w = new Word(currentSentence);
@@ -119,16 +120,12 @@ public class OMSTIConverter implements UFSACConverter
                 if (localName.equals("instance"))
                 {
                     List<String> wordsAfter = Arrays.asList(getAndStopSaveCharacters().split(RegExp.anyWhiteSpaceGrouped.pattern()));
-                    int indexOfFirstDot = wordsAfter.indexOf(".");
-                    if (indexOfFirstDot == -1) indexOfFirstDot = wordsAfter.size();
-                    wordsAfter = wordsAfter.subList(0, indexOfFirstDot);
+                    wordsAfter = Utils.subListEndingOnFirstEndOfSentenceMarker(wordsAfter);
                     for (String wordAfter : wordsAfter)
                     {
                         Word w = new Word(currentSentence);
                         w.setValue(wordAfter);
                     }
-                    Word w = new Word(currentSentence);
-                    w.setValue(".");
                     out.writeSentence(currentSentence);
                 }
                 else if (localName.equals("head"))

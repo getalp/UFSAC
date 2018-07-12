@@ -9,6 +9,7 @@ import edu.stanford.nlp.process.TokenizerFactory;
 import getalp.wsd.common.utils.RegExp;
 import getalp.wsd.common.utils.SenseKeyUtils;
 import getalp.wsd.common.utils.StringUtils;
+import getalp.wsd.common.utils.Utils;
 import getalp.wsd.common.xml.SAXBasicHandler;
 import getalp.wsd.ufsac.core.Sentence;
 import getalp.wsd.ufsac.core.Word;
@@ -102,7 +103,7 @@ public class Senseval2LexicalSampleConverter implements UFSACConverter
                 else if (localName.equals("head"))
                 {
                     List<String> wordsBefore = tokenize(clean(getAndStopSaveCharacters()));
-                    wordsBefore = wordsBefore.subList(wordsBefore.lastIndexOf(".") + 1, wordsBefore.size());
+                    wordsBefore = Utils.subListStartingAfterLastEndOfSentenceMarker(wordsBefore);
                     for (String wordBefore : wordsBefore)
                     {
                         Word w = new Word(currentSentence);
@@ -118,16 +119,12 @@ public class Senseval2LexicalSampleConverter implements UFSACConverter
                 if (localName.equals("instance"))
                 {
                     List<String> wordsAfter = tokenize(clean(getAndStopSaveCharacters()));
-                    int indexOfFirstDot = wordsAfter.indexOf(".");
-                    if (indexOfFirstDot == -1) indexOfFirstDot = wordsAfter.size();
-                    wordsAfter = wordsAfter.subList(0, indexOfFirstDot);
+                    wordsAfter = Utils.subListEndingOnFirstEndOfSentenceMarker(wordsAfter);
                     for (String wordAfter : wordsAfter)
                     {
                         Word w = new Word(currentSentence);
                         w.setValue(wordAfter);
                     }
-                    Word w = new Word(currentSentence);
-                    w.setValue(".");
                     out.writeSentence(currentSentence);
                 } 
                 else if (localName.equals("head"))
