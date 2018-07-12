@@ -36,6 +36,13 @@ public class Senseval3Task6Converter implements UFSACConverter
 
     private Map<String, List<String>> sensesById;
     
+    private String trainOrTest = "";
+    
+    public Senseval3Task6Converter(String trainOrTest)
+    {
+        this.trainOrTest = trainOrTest;
+    }
+    
     @Override
     public void convert(String inpath, String outpath, int wnVersion)
     {
@@ -43,9 +50,9 @@ public class Senseval3Task6Converter implements UFSACConverter
         {
         	verbKeyToWordnetKey = new HashMap<>();
             sensesById = new HashMap<>();
-            loadMappingForVerbs(inpath + "/EnglishLS.dictionary.mapping.xml");
-            loadKeys(inpath + "/EnglishLS.test.key");
-            loadCorpus(inpath + "/EnglishLS.test", outpath);
+            loadMappingForVerbs(inpath + "/" + trainOrTest + "/EnglishLS.dictionary.mapping.xml");
+            loadKeys(inpath + "/" + trainOrTest + "/EnglishLS." + trainOrTest + ".key");
+            loadCorpus(inpath + "/" + trainOrTest + "/EnglishLS." + trainOrTest, outpath);
         } 
         catch (Exception e)
         {
@@ -161,10 +168,22 @@ public class Senseval3Task6Converter implements UFSACConverter
     		{
     			line = line.replaceAll("&frac34 ;", "3/4");
     		}
-    		if (line.contains("&deg/60 ;"))
-    		{
-    			line = line.replaceAll("&deg/60 ;", "deg");
-    		}
+            if (line.contains("&deg/60 ;"))
+            {
+                line = line.replaceAll("&deg/60 ;", "deg");
+            }
+            if (line.contains("&Eacute ;"))
+            {
+                line = line.replaceAll("&Eacute ;", "E");
+            }
+            if (line.contains("&sup2 ;"))
+            {
+                line = line.replaceAll("&sup2 ;", "2");
+            }
+            if (line.contains("&THORN ;"))
+            {
+                line = line.replaceAll("&THORN ;", "p");
+            }
     		writer.write(line + "\n");
     	}
     	writer.close();

@@ -14,9 +14,9 @@ public class ConvertOriginalCorpora
     {
         OriginalCorpusConverter converter = new OriginalCorpusConverter(30);
         
-        converter.convert(new Senseval2Converter(), "data/original_corpus/mihalcea/senseval2", "data/corpus/senseval2.xml", 171, false);
+        converter.convert(new MihalceaSensevalConverter("d00", "d01", "d02"), "data/original_corpus/mihalcea/senseval2", "data/corpus/senseval2.xml", 171, false);
 
-        converter.convert(new Senseval3Task1Converter(), "data/original_corpus/mihalcea/senseval3", "data/corpus/senseval3task1.xml", 171, false);
+        converter.convert(new MihalceaSensevalConverter("d000", "d001", "d002"), "data/original_corpus/mihalcea/senseval3", "data/corpus/senseval3task1.xml", 171, false);
         
         converter.convert(new Semeval2007Task7Converter(), "data/original_corpus/semeval/2007/task7", "data/corpus/semeval2007task7.xml", 21, false);
         
