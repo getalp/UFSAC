@@ -11,6 +11,7 @@ import org.xml.sax.helpers.*;
 import getalp.wsd.common.utils.PercentProgressDisplayer;
 import getalp.wsd.common.utils.RegExp;
 import getalp.wsd.common.utils.SenseKeyUtils;
+import getalp.wsd.common.utils.StringUtils;
 import getalp.wsd.common.utils.Utils;
 import getalp.wsd.common.xml.SAXBasicHandler;
 import getalp.wsd.common.xml.SAXEntityResolverIgnoringDTD;
@@ -19,7 +20,7 @@ import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterSentence;
 
 public class OMSTIConverter implements UFSACConverter
 {
-    private Map<String, String> senseKeysById;
+    private Map<String, List<String>> senseKeysById;
     
     private StreamingCorpusWriterSentence out;
     
@@ -74,11 +75,12 @@ public class OMSTIConverter implements UFSACConverter
         while ((line = br.readLine()) != null) 
         {
            String[] tokens = line.split(RegExp.anyWhiteSpaceGrouped.pattern());
-           senseKeysById.put(tokens[1], tokens[2].replaceAll("%5", "%3"));
-           if (tokens.length > 3)
+           List<String> senseKeys = new ArrayList<>();
+           for (int i = 2 ; i < tokens.length ; i++)
            {
-               System.out.println("Warning : OMSTI sense key ignored");
+               senseKeys.add(tokens[i].replaceAll("%5", "%3"));
            }
+           senseKeysById.put(tokens[1], senseKeys);
         }
         br.close();
     }
@@ -97,7 +99,7 @@ public class OMSTIConverter implements UFSACConverter
             {
                 if (localName.equals("instance"))
                 {
-                    currentSenseKey = senseKeysById.get(atts.getValue("id"));
+                    currentSenseKey = StringUtils.join(senseKeysById.get(atts.getValue("id")), ";");
                     currentSentence = new Sentence();
                     resetAndStartSaveCharacters();
                 }
@@ -131,7 +133,7 @@ public class OMSTIConverter implements UFSACConverter
                 else if (localName.equals("head"))
                 {
                     Word w = new Word(currentSentence);
-                    w.setValue(getAndStopSaveCharacters());
+                    w.setValue(getAndStopSaveCharacters().trim());
                     w.setAnnotation("lemma", SenseKeyUtils.extractLemmaFromSenseKey(currentSenseKey));
                     w.setAnnotation("pos", SenseKeyUtils.extractPOSFromSenseKey(currentSenseKey));
                     w.setAnnotation("wn" + wnVersion + "_key", currentSenseKey);

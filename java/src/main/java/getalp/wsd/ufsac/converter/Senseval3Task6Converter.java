@@ -6,6 +6,7 @@ import getalp.wsd.common.utils.File;
 import getalp.wsd.common.utils.RegExp;
 import getalp.wsd.common.utils.SenseKeyUtils;
 import getalp.wsd.common.utils.StringUtils;
+import getalp.wsd.common.utils.Utils;
 import getalp.wsd.common.xml.SAXBasicHandler;
 import getalp.wsd.ufsac.core.Sentence;
 import getalp.wsd.ufsac.core.Word;
@@ -220,20 +221,12 @@ public class Senseval3Task6Converter implements UFSACConverter
                 }
                 else if (qName.equals("head"))
                 {
-                    String[] wordsBefore = getAndStopSaveCharacters().split(RegExp.anyWhiteSpaceGrouped.pattern());
-                    int indexOfLastDot = -1;
-                    for (int i = wordsBefore.length - 1; i >= 0; i--)
-                    {
-                        if (wordsBefore[i].equals("."))
-                        {
-                            indexOfLastDot = i;
-                            break;
-                        }
-                    }
-                    for (int i = indexOfLastDot + 1; i < wordsBefore.length; i++)
+                    List<String> wordsBefore = Arrays.asList(getAndStopSaveCharacters().split(RegExp.anyWhiteSpaceGrouped.pattern()));
+                    wordsBefore = Utils.subListStartingAfterLastEndOfSentenceMarker(wordsBefore);
+                    for (String wordBefore : wordsBefore)
                     {
                         Word w = new Word(currentSentence);
-                        w.setValue(wordsBefore[i]);
+                        w.setValue(wordBefore);
                     }
                     resetAndStartSaveCharacters();
                 }
@@ -244,23 +237,13 @@ public class Senseval3Task6Converter implements UFSACConverter
             {
                 if (qName.equals("instance"))
                 {
-                    String[] wordsAfter = getAndStopSaveCharacters().split(RegExp.anyWhiteSpaceGrouped.pattern());
-                    int indexOfFirstDot = wordsAfter.length;
-                    for (int i = 0; i < wordsAfter.length; i++)
-                    {
-                        if (wordsAfter[i].equals("."))
-                        {
-                            indexOfFirstDot = i;
-                            break;
-                        }
-                    }
-                    for (int i = 0; i < indexOfFirstDot; i++)
+                    List<String> wordsAfter = Arrays.asList(getAndStopSaveCharacters().split(RegExp.anyWhiteSpaceGrouped.pattern()));
+                    wordsAfter = Utils.subListEndingOnFirstEndOfSentenceMarker(wordsAfter);
+                    for (String wordAfter : wordsAfter)
                     {
                         Word w = new Word(currentSentence);
-                        w.setValue(wordsAfter[i]);
+                        w.setValue(wordAfter);
                     }
-                    Word w = new Word(currentSentence);
-                    w.setValue(".");
                     out.writeSentence(currentSentence);
                 } 
                 else if (qName.equals("head"))
