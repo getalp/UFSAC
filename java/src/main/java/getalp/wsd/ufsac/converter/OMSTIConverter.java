@@ -25,6 +25,8 @@ public class OMSTIConverter implements UFSACConverter
     private StreamingCorpusWriterSentence out;
     
     private int wnVersion;
+    
+    public boolean verbose = false;
 
     @Override
     public void convert(String inPath, String outPath, int wnVersion)
@@ -60,7 +62,7 @@ public class OMSTIConverter implements UFSACConverter
         PercentProgressDisplayer progress = new PercentProgressDisplayer(wordsList.size());
         for (int i = 0 ; i < wordsList.size() ; i++)
         {
-        	progress.refresh("Info : OMSTI loading " + pos + "... ", i);
+        	if (verbose) progress.refresh("Info : OMSTI loading " + pos + "... ", i);
             loadKeys(wordsList.get(i) + ".key");
             loadFile(wordsList.get(i) + ".xml");
         }
