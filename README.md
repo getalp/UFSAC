@@ -14,6 +14,18 @@ This repository contains:
 
 ## Version history
 
+### Version 2.0.0 (July 2018)
+
+Direct link to the data: <https://drive.google.com/file/d/1FOpl6AUHVRLbVp5zPQQmjc-HVsssT1up>
+
+- Add new corpora:
+  - *Raganato et al.*'s versions of SensEval/SemEval corpora (6 separate corpora, original data: <http://lcl.uniroma1.it/wsdeval/data/WSD_Unified_Evaluation_Datasets.zip>) 
+  - Training and testing data of SensEval 2 lexical sample task (2 separate corpora, original data: <http://www.hipposmond.com/senseval2/Results/senseval2-corpora.tgz>)
+  - Training and testing data of SensEval 3 Task 6 (lexical sample) (2 separate corpora, original data: <http://web.eecs.umich.edu/~mihalcea/senseval/senseval3/data/EnglishLS/EnglishLS.train.tar.gz> and <http://web.eecs.umich.edu/~mihalcea/senseval/senseval3/data/EnglishLS/EnglishLS.test.tar.gz>)
+  - Train-O-Matic (original data: <http://trainomatic.org/data/train-o-matic-data.zip>)
+- Add a "normalizing punctuation" step after every corpus conversion
+- Small fix in OMSTI
+
 ### Version 1.1.0 (June 2018)
 
 Direct link to the data: <https://drive.google.com/file/d/12tIfu85GrbeQcMs3H5VQOvzSqNWvYuol>
