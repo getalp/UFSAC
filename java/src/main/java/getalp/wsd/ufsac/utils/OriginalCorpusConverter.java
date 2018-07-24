@@ -82,7 +82,7 @@ public class OriginalCorpusConverter
             public void modifyWord(Word word)
             {
                 String wordValue = word.getValue();
-                wordValue = RegExp.invisiblePattern.matcher(wordValue).replaceAll("");
+                wordValue = RegExp.anyWhiteSpaceGrouped.matcher(wordValue).replaceAll("");
                 word.setValue(wordValue);
             }
         };

@@ -10,7 +10,9 @@ import java.util.Scanner;
 import org.xml.sax.*;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import getalp.wsd.common.utils.RegExp;
 import getalp.wsd.common.utils.StringUtils;
+import getalp.wsd.common.xml.SAXBasicHandler;
 import getalp.wsd.ufsac.core.Document;
 import getalp.wsd.ufsac.core.Paragraph;
 import getalp.wsd.ufsac.core.Sentence;
@@ -19,7 +21,7 @@ import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterDocument;
 
 import org.xml.sax.helpers.DefaultHandler;
 
-public class Semeval2013Task12Converter extends DefaultHandler implements UFSACConverter
+public class Semeval2013Task12Converter extends SAXBasicHandler implements UFSACConverter
 {
 	private StreamingCorpusWriterDocument out;
 
@@ -31,10 +33,6 @@ public class Semeval2013Task12Converter extends DefaultHandler implements UFSACC
 	
 	private Word currentWord;
 
-	private boolean saveCharacters;
-
-	private String currentCharacters;
-
 	private String currentPos;
 
 	private String currentLemma;
@@ -44,6 +42,18 @@ public class Semeval2013Task12Converter extends DefaultHandler implements UFSACC
     private Map<String, String> sensesById;
     
     private int wnVersion;
+    
+    private String lang;
+    
+    public Semeval2013Task12Converter() 
+    {
+		this("en");
+	}
+    
+    public Semeval2013Task12Converter(String lang) 
+    {
+		this.lang = lang;
+	}
     
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException
@@ -61,18 +71,19 @@ public class Semeval2013Task12Converter extends DefaultHandler implements UFSACC
 		}
 		else if (localName.equals("instance"))
 		{
-			saveCharacters = true;
-			currentCharacters = "";
+			resetAndStartSaveCharacters();
 			currentPos = atts.getValue("pos");
 			currentLemma = atts.getValue("lemma").toLowerCase();
 			currentWordId = atts.getValue("id");
 		}
 		else if (localName.equals("wf"))
 		{
-		    saveCharacters = true;
-		    currentCharacters = "";
+			resetAndStartSaveCharacters();
 		    currentPos = atts.getValue("pos");
-		    currentLemma = atts.getValue("lemma").toLowerCase();
+		    if (atts.getValue("lemma") != null)
+		    {
+			    currentLemma = atts.getValue("lemma").toLowerCase();
+		    }
 		}
 	}
 
@@ -86,29 +97,21 @@ public class Semeval2013Task12Converter extends DefaultHandler implements UFSACC
         else if (localName.equals("instance"))
 		{
 			currentWord = new Word(currentSentence);
-			currentWord.setValue(currentCharacters);
+			currentWord.setValue(getAndStopSaveCharacters());
 			currentWord.setAnnotation("lemma", currentLemma);
 			currentWord.setAnnotation("pos", currentPos);
 			currentWord.setAnnotation("id", currentWordId);
-            currentWord.setAnnotation("wn" + wnVersion + "_key", sensesById.get(currentWordId));
-			saveCharacters = false;	
+			if (sensesById.containsKey(currentWordId))
+			{
+				currentWord.setAnnotation("wn" + wnVersion + "_key", sensesById.get(currentWordId));
+			}
 		}
 		else if (localName.equals("wf"))
 		{
             currentWord = new Word(currentSentence);
-            currentWord.setValue(currentCharacters);
+            currentWord.setValue(getAndStopSaveCharacters());
             currentWord.setAnnotation("lemma", currentLemma);
             currentWord.setAnnotation("pos", currentPos);
-            saveCharacters = false; 
-		}
-	}
-
-	@Override
-	public void characters(char[] ch, int start, int length) throws SAXException
-	{
-		if (saveCharacters)
-		{
-			currentCharacters += new String(ch, start, length);
 		}
 	}
 
@@ -117,8 +120,8 @@ public class Semeval2013Task12Converter extends DefaultHandler implements UFSACC
         this.wnVersion = wnVersion;
         out = new StreamingCorpusWriterDocument();
         out.open(outpath);
-        loadSenses(inpath + "/keys/gold/wordnet/wordnet.en.key");
-        loadCorpus(inpath + "/data/multilingual-all-words.en.xml");
+        loadSenses(inpath + "/keys/gold/wordnet/wordnet." + lang + ".key");
+        loadCorpus(inpath + "/data/multilingual-all-words." + lang + ".xml");
         out.close();
     }
 
@@ -145,7 +148,7 @@ public class Semeval2013Task12Converter extends DefaultHandler implements UFSACC
             while (sc.hasNextLine())
             {
                 String line = sc.nextLine();
-                String[] tokens = line.split("\\s+");
+                String[] tokens = line.split(RegExp.anyWhiteSpaceGrouped.pattern());
                 String id = tokens[1];
                 List<String> senses = new ArrayList<>();
                 for (int i = 2 ; i < tokens.length ; i++)
