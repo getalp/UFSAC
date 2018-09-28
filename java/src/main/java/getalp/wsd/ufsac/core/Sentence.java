@@ -1,7 +1,7 @@
 package getalp.wsd.ufsac.core;
 
 import java.util.List;
-
+import java.util.ArrayList;
 import getalp.wsd.common.utils.RegExp;
 
 public class Sentence extends ParentLexicalEntity
@@ -18,7 +18,7 @@ public class Sentence extends ParentLexicalEntity
 	
 	public Sentence(List<Word> words)
 	{
-		for (Word word : words)
+		for (Word word : new ArrayList<>(words))
 		{
 			addWord(word);
 		}
