@@ -80,7 +80,7 @@ public class Semeval2015Task13Converter extends DefaultHandler implements UFSACC
         else if (localName.equals("wf"))
 		{
 			currentWord = new Word(currentSentence);
-			currentWord.setValue(currentCharacters);
+			currentWord.setValue(currentCharacters.replaceAll(" ", "_"));
 			if (currentLemma != null)
 			{
 			    currentLemma = currentLemma.toLowerCase();

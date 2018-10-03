@@ -19,7 +19,6 @@ import getalp.wsd.ufsac.core.Sentence;
 import getalp.wsd.ufsac.core.Word;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterDocument;
 
-import org.xml.sax.helpers.DefaultHandler;
 
 public class Semeval2013Task12Converter extends SAXBasicHandler implements UFSACConverter
 {

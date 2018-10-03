@@ -113,7 +113,7 @@ public class RaganatoUnifiedConverter implements UFSACConverter
                 else if (localName.equals("instance"))
                 {
                     currentWord = new Word(currentSentence);
-                    currentWord.setValue(getAndStopSaveCharacters());
+                    currentWord.setValue(getAndStopSaveCharacters().replaceAll(" ", "_"));
                     currentWord.setAnnotation("lemma", currentLemma);
                     currentWord.setAnnotation("pos", currentPos);
                     currentWord.setAnnotation("id", currentWordId);

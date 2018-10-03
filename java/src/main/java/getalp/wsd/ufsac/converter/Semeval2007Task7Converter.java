@@ -87,7 +87,7 @@ public class Semeval2007Task7Converter extends DefaultHandler implements UFSACCo
         else if (localName.equals("instance"))
 		{
 			currentWord = new Word(currentSentence);
-			currentWord.setValue(currentCharacters);
+			currentWord.setValue(currentCharacters.replaceAll(" ", "_"));
 			currentWord.setAnnotation("lemma", currentLemma);
 			currentWord.setAnnotation("pos", currentPos);
 			currentWord.setAnnotation("id", currentWordId);
