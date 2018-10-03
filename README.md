@@ -14,6 +14,13 @@ This repository contains:
 
 ## Version history
 
+### Version 2.1 (October 2018)
+
+Direct link to the data: <https://drive.google.com/file/d/1Oigo3kzRosz2VjyA44vpJZ58tDFyLRMO>
+
+- Small fix in Semeval2007Task7, Semeval2015Task13 and Raganato et al. corpora where words in a multi-word expression were collapsed. They are now separated by an underscore symbol.
+- Version number is shorter: <major version>.<minor version>
+
 ### Version 2.0.0 (July 2018)
 
 Direct link to the data: <https://drive.google.com/file/d/1FOpl6AUHVRLbVp5zPQQmjc-HVsssT1up>
