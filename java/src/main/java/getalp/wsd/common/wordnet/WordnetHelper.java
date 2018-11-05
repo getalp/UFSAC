@@ -1,20 +1,13 @@
 package getalp.wsd.common.wordnet;
 
 import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.item.*;
 import edu.mit.jwi.morph.WordnetStemmer;
+import getalp.wsd.common.utils.Resources;
 import getalp.wsd.ufsac.core.Sentence;
-import getalp.wsd.ufsac.streaming.reader.StreamingCorpusReaderSentence;
 
 public class WordnetHelper
 {
@@ -231,7 +224,9 @@ public class WordnetHelper
         wordKeyToFirstSenseKey = new HashMap<>();
         try
         {
-            wordnet = new Dictionary(this.getClass().getResource(wordnetDictPath).toURI().toURL());
+            String tmpdir = System.getProperty("java.io.tmpdir");
+            Resources.extractResources(tmpdir);
+            wordnet = new Dictionary(new File(tmpdir + wordnetDictPath));
             wordnet.open();
         }
         catch (Exception e)
@@ -300,7 +295,7 @@ public class WordnetHelper
             }
             else
             {
-                wordKeyToSenseList.put(wordKey, new ArrayList<>(Arrays.asList(senseKey)));
+                wordKeyToSenseList.put(wordKey, new ArrayList<>(Collections.singletonList(senseKey)));
             }
         }
         synsetToSenseList.put(synsetKey, senseKeyList);
