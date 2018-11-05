@@ -2,6 +2,7 @@ package getalp.wsd.common.wordnet;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class WordnetMapping
 {    
-    public static final String wordnetMappingDirectoryPath = "data/wordnet/mapping";
+    public static final String wordnetMappingDirectoryPath = "/data/wordnet/mapping";
     
     private Map<String, List<String>> map;
     
@@ -53,7 +54,7 @@ public class WordnetMapping
     
     private void loadWithException(String mappingFile, String postag) throws Exception
     {
-        BufferedReader br = new BufferedReader(new FileReader(mappingFile));
+        BufferedReader br = new BufferedReader(new InputStreamReader(WordnetMapping.class.getResourceAsStream(mappingFile)));
         String line;
         while ((line = br.readLine()) != null) 
         {
