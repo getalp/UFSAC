@@ -1,0 +1,74 @@
+//////////////////////////////////////////////////////////////
+//
+//  README file
+//
+//  WN-Map: Mappings between WordNet versions
+//  Copyright (c) 2003 TALP Research Center
+//	           Universitat Politècnica de Catalunya. 
+//		   Barcelona, Spain
+//		   http://www.lsi.upc.es/~nlp.
+//
+//////////////////////////////////////////////////////////////
+
+  WN-Map is distributed under the license you'll find in 
+  the LICENSE file in the same tarball where you found
+  this README. If you don't have the LICENSE file, you
+  can get it at http://www.lsi.upc.es/~nlp
+
+  The WN-Map tarball where this README was included 
+  contains synset mappings between different WordNet 
+  versions. There is one directory for each mapping:
+
+   Directory	   Content
+   -------------------------------------------
+   mapping-15-16   mapping of WN1.5 to WN1.6
+   mapping-16-17   mapping of WN1.6 to WN1.7
+   mapping-16-171  mapping of WN1.6 to WN1.7.1
+   mapping-16-20   mapping of WN1.6 to WN2.0
+   mapping-17-20   mapping of WN1.7 to WN2.0
+   mapping-171-20  mapping of WN1.7.1 to WN2.0
+
+  In each directory, you'll find the files:
+
+	wnXX-YY.adj    mapping for adjectives
+	wnXX-YY.adv    mapping for adverbs
+	wnXX-YY.noun   mapping for nouns
+	wnXX-YY.verb   mapping for verbs
+
+   where XX and YY are the digits for the mapped versions, without
+   dots (e.g wn15-16, wn17-20, etc)
+
+   The files contain a synset per line, and each line has 
+   the following format:
+
+	synset-XX (synset-YY weight)+ (m|p)
+
+    That is, the first field is the synset in WN version XX, after, 
+  there comes a non-empty list of pairs (synset YY, weight) 
+  where all weights in the line add up to 1. If not, it means 
+  that some of the discarded options had a low but non-zero weight.
+
+    The last field indicates whether the WN XX synset was 
+  "monosemous" (m) or "polysemous" (p), that is, if it had
+  only one or many candidate synsets in WN YY to map to. 
+
+  IMPORTANT:  Note that the mappings are automatically generated
+  and unverified. Even more, they are not necessarily cross-consistent  
+  (e.g. the mapping wn1.5-wn2.0 is not guaranteed to be the same
+  than the result of concatenating the mapping wn1.5-wn1.6 with
+  wn1.6-wn2.0)
+    
+    For further information, consult:
+
+    The web pages of the authors
+	http://www.lsi.upc.es/~daude
+	http://www.lsi.upc.es/~padro
+	http://www.lsi.upc.es/~rigau
+
+    The web page of the UPC NLP research group:
+        http://www.lsi.upc.es/~nlp
+
+    The web page of the TALP research center:
+	http://www.talp.upc.es
+
+

@@ -1,6 +1,7 @@
 package getalp.wsd.common.wordnet;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,9 +18,7 @@ import getalp.wsd.ufsac.streaming.reader.StreamingCorpusReaderSentence;
 
 public class WordnetHelper
 {
-    public static final String wordnetDirectoryPath = "data/wordnet";
-
-    public static final String wordnetGlossTagDirectoryPath = "data/corpus/wngt.xml";
+    public static final String wordnetDirectoryPath = "/data/wordnet";
 
     private Map<String, String> senseToSynset;
 
@@ -45,8 +44,6 @@ public class WordnetHelper
     
     private WordnetStemmer morphy;
 
-        
-    public static boolean useWNGT = false;
 
     private static final Map<Integer, WordnetHelper> loadedHelpers = new HashMap<>();
 
@@ -232,16 +229,16 @@ public class WordnetHelper
         senseKeyToSenseNumber = new HashMap<>();
         senseNumberToSenseKey = new HashMap<>();
         wordKeyToFirstSenseKey = new HashMap<>();
-        wordnet = new Dictionary(new File(wordnetDictPath));
-        morphy = new WordnetStemmer(wordnet);
         try
         {
+            wordnet = new Dictionary(this.getClass().getResource(wordnetDictPath).toURI().toURL());
             wordnet.open();
         }
         catch (Exception e)
         {
             throw new RuntimeException(e);
         }
+        morphy = new WordnetStemmer(wordnet);
         
         Iterator<ISenseEntry> iise = wordnet.getSenseEntryIterator();
         while (iise.hasNext())
@@ -271,22 +268,6 @@ public class WordnetHelper
                 ISynset is = iis.next();
                 addSynset(is, pos);
             }
-        }
-        
-        if (version == 30 && useWNGT)
-        {
-	        StreamingCorpusReaderSentence loader = new StreamingCorpusReaderSentence()
-            {
-	            @Override
-	            public void readSentence(Sentence s)
-	            {
-	                String[] senseKeys = s.getAnnotationValue("wn" + version + "_key").split(";");
-	                String synsetKey = senseToSynset.get(senseKeys[0]);
-	                synsetToGloss.put(synsetKey, s);
-	            }
-            };
-
-	        loader.load(wordnetGlossTagDirectoryPath);
         }
     }
     

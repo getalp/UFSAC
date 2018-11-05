@@ -68,15 +68,25 @@ public class CorpusPOSTagger
     private void initStanfordPOSTagger()
     {
         StdOutStdErr.stfu();
-        if (privilegiateSpeedOverQuality)
+        try
         {
-            tagger = new MaxentTagger(speedModelPath);
+            if (privilegiateSpeedOverQuality)
+            {
+                tagger = new MaxentTagger(speedModelPath);
+            }
+            else
+            {
+                tagger = new MaxentTagger(qualityModelPath);
+            }
         }
-        else
+        catch (Exception e)
         {
-            tagger = new MaxentTagger(qualityModelPath);
+            throw new RuntimeException(e);
         }
-        StdOutStdErr.speak();
+        finally
+        {
+            StdOutStdErr.speak();
+        }
     }
 
     private List<HasWord> toStanfordWordList(List<Word> words)
