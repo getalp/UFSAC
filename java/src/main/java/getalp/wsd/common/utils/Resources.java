@@ -87,8 +87,6 @@ public class Resources
         data.add("data/wordnet/171/dict/noun.exc");
         data.add("data/wordnet/171/dict/index.adj");
         data.add("data/wordnet/171/dict/lexnames");
-        data.add("data/wordnet/cluster/30");
-        data.add("data/wordnet/cluster/21");
         data.add("data/wordnet/21/AUTHORS");
         data.add("data/wordnet/21/dict/Makefile");
         data.add("data/wordnet/21/dict/adv.exc");
@@ -225,6 +223,10 @@ public class Resources
         data.add("data/wordnet/20/dict/noun.exc");
         data.add("data/wordnet/20/dict/index.adj");
         data.add("data/wordnet/20/dict/lexnames");
+        /*
+        data.add("data/wordnet/cluster/30");
+        data.add("data/wordnet/cluster/21");
+        */
         /*
         data.add("data/wordnet/mapping/mapping-15-171/wn15-171.noun");
         data.add("data/wordnet/mapping/mapping-15-171/wn15-171.adj");

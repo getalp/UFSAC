@@ -224,7 +224,7 @@ public class WordnetHelper
         wordKeyToFirstSenseKey = new HashMap<>();
         try
         {
-            String tmpdir = System.getProperty("java.io.tmpdir");
+            String tmpdir = System.getProperty("java.io.tmpdir") + "/ufsac";
             Resources.extractResources(tmpdir);
             wordnet = new Dictionary(new File(tmpdir + wordnetDictPath));
             wordnet.open();
