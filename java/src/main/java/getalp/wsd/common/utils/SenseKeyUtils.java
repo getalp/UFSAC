@@ -13,4 +13,9 @@ public class SenseKeyUtils
 		String posAsInt = senseKey.substring(index + 1, index + 2);
 		return POSConverter.toWNPOS(Integer.valueOf(posAsInt));
 	}
+
+	public static String extractWordKeyFromSenseKey(String senseKey)
+	{
+		return extractLemmaFromSenseKey(senseKey) + "%" + extractPOSFromSenseKey(senseKey);
+	}
 }
