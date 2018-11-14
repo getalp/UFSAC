@@ -1,6 +1,7 @@
 package getalp.wsd.common.utils;
 
 import java.io.InputStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -414,7 +415,15 @@ public class Resources
         InputStream in = File.class.getResourceAsStream(resourceFilePath);
         java.io.File tmpFile = new java.io.File(dirPath, resourceFilePath);
         tmpFile.getParentFile().mkdirs();
-        Files.copy(in, tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        //Files.copy(in, tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        try
+        {
+            Files.copy(in, tmpFile.toPath());
+        }
+        catch (FileAlreadyExistsException ignored)
+        {
+
+        }
         in.close();
     }
 }
