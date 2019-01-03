@@ -2,7 +2,7 @@
 
 This repository contains the dataset of the article named "UFSAC: Unification of Sense Annotated Corpora and Tools", written by Loïc Vial, Benjamin Lecouteux and Didier Schwab, for the 11th edition of the Language Resources and Evaluation Conference (LREC) that took place in May 2018 in Miyazaki, Japan.
 
-The full article is available at the following URL: <https://hal.archives-ouvertes.fr/hal-01718237>.
+The full article is available at the following URL: <http://www.lrec-conf.org/proceedings/lrec2018/summaries/250.html>.
 
 ## Content of the repository
 
