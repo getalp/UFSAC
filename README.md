@@ -17,20 +17,15 @@ This repository contains:
 ## Get Started
 
 If you want to use the Java API or the scripts, the prerequisites are:
-
-* Java 8 or higher - <https://java.com>
-
-* Maven - <https://maven.apache.org>
+- Java 8 or higher - <https://java.com>
+- Maven - <https://maven.apache.org>
 
 Once they are installed, you must compile the code:
-
-* Go into the `java` folder
-
-* Run `mvn compile` or `./compile.sh`
+- Go into the `java` folder
+- Run `mvn compile` or `./compile.sh`
 
 And if you want to use the library as a dependency in another Maven projects:
-
-* Run `mvn install` or `./install.sh`
+- Run `mvn install` or `./install.sh`
 
 ## Version history
 
