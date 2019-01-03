@@ -25,6 +25,7 @@ Once they are installed, you must compile the code:
 - Run `mvn compile` or `./compile.sh`
 
 And if you want to use the library as a dependency in another Maven projects:
+- Go into the `java` folder
 - Run `mvn install` or `./install.sh`
 
 ## Version history
