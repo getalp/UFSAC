@@ -1,11 +1,11 @@
-package getalp.wsd.ufsac.examples;
+package getalp.wsd.ufsac.scripts;
 import getalp.wsd.ufsac.converter.*;
 import getalp.wsd.ufsac.utils.OriginalCorpusConverter;
 
 public class ConvertOriginalCorpora
 {
     /**
-     * Usage: java getalp.wsd.ufsac.examples.ConvertOriginalCorpora
+     * Usage: java getalp.wsd.ufsac.scripts.ConvertOriginalCorpora
      * 
      * Note that you must manually remove the lines of code that you do not need if you want to convert specific corpora.
      * This is just an example of script that was used to produce all the corpora described in the article.

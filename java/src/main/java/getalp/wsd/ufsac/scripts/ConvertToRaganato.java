@@ -1,4 +1,4 @@
-package getalp.wsd.ufsac.examples;
+package getalp.wsd.ufsac.scripts;
 
 import getalp.wsd.ufsac.converter.RaganatoUnifiedConverterInverse;
 import getalp.wsd.common.utils.ArgumentParser;

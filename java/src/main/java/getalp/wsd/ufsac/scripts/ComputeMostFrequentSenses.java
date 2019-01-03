@@ -1,4 +1,4 @@
-package getalp.wsd.ufsac.examples;
+package getalp.wsd.ufsac.scripts;
 import getalp.wsd.common.utils.POSConverter;
 import getalp.wsd.common.wordnet.WordnetHelper;
 import getalp.wsd.ufsac.core.Word;
@@ -8,7 +8,7 @@ import java.util.*;
 public class ComputeMostFrequentSenses
 {
     /**
-     * Usage: java getalp.wsd.ufsac.examples.ComputeMostFrequentSenses [corpus]...
+     * Usage: java getalp.wsd.ufsac.scripts.ComputeMostFrequentSenses [corpus]...
      */
     public static void main(String[] corpusPaths) throws Exception
     {
