@@ -12,6 +12,8 @@ This repository contains:
 
 * The source code of the Java API and the scripts described in the paper, in the folder **`java`**.
 
+* Scripts for converting corpora from various formats (Semcor, DSO, OMSTI...) into UFSAC, converting UFSAC corpora into [*Raganato et al.*](http://lcl.uniroma1.it/wsdeval/data/EACL17_WSD_EvaluationFramework.pdf)'s format, computing MFS, etc., in the folder **`scripts`**
+
 ## Version history
 
 ### Version 2.1 (October 2018)
