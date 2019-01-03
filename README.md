@@ -12,6 +12,22 @@ This repository contains:
 
 * The source code of the Java API and the scripts described in the paper, in the folder **`java`**.
 
+* Scripts for converting corpora from various formats (Semcor, DSO, OMSTI...) into UFSAC, converting UFSAC corpora into [*Raganato et al.*](http://lcl.uniroma1.it/wsdeval/data/EACL17_WSD_EvaluationFramework.pdf)'s format, computing MFS, etc., in the folder **`scripts`**
+
+## Get Started
+
+If you want to use the Java API or the scripts, the prerequisites are:
+- Java 8 or higher - <https://java.com>
+- Maven - <https://maven.apache.org>
+
+Once they are installed, you must compile the code:
+- Go into the `java` folder
+- Run `mvn compile` or `./compile.sh`
+
+And if you want to use the library as a dependency in another Maven projects:
+- Go into the `java` folder
+- Run `mvn install` or `./install.sh`
+
 ## Version history
 
 ### Version 2.1 (October 2018)
