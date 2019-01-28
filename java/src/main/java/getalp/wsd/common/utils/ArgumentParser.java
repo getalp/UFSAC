@@ -3,6 +3,7 @@ package getalp.wsd.common.utils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.cli.*;
 
@@ -130,9 +131,14 @@ public class ArgumentParser
 	}
 
 	public List<String> getArgValueList(String name)
-    {
-    	return getArgValueGeneric(name);
-    }
+	{
+		return getArgValueGeneric(name);
+	}
+
+	public List<Boolean> getArgValueBooleanList(String name)
+	{
+		return getArgValueList(name).stream().map(Boolean::valueOf).collect(Collectors.toList());
+	}
 
     @SuppressWarnings("unchecked")
     private <T> T getArgValueGeneric(String name)
