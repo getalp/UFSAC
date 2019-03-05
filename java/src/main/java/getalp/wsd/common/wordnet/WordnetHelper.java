@@ -304,7 +304,7 @@ public class WordnetHelper
             senseToRelatedSynsets.put(senseKey, loadRelations(is, iw));
             synsetToHypernymsSynsets.put(synsetKey, loadHypernyms(is));
             synsetToInstanceHypernymsSynsets.put(synsetKey, loadInstanceHypernyms(is));
-            synsetToAntonymsSynsets.put(synsetKey, loadAntonyms(is));
+            synsetToAntonymsSynsets.put(synsetKey, loadAntonyms(iw));
             if (wordKeyToSenseList.containsKey(wordKey))
             {
                 wordKeyToSenseList.get(wordKey).add(senseKey);
@@ -358,14 +358,14 @@ public class WordnetHelper
         return loadSemanticRelationsBySymbol(synset, "@i");
     }
 
-    private List<String> loadAntonyms(ISynset synset)
+    private List<String> loadAntonyms(IWord word)
     {
-        return loadSemanticRelationsBySymbol(synset, "!");
+        return loadLexicalRelationsBySymbol(word, "!");
     }
 
     private List<String> loadSemanticRelationsBySymbol(ISynset synset, String relationSymbol)
     {
-        List<String> hypernyms = new ArrayList<>();
+        List<String> relatedSynsetKeys = new ArrayList<>();
         // semantic relations
         for (Map.Entry<IPointer, List<ISynsetID>> iPointerListEntry : synset.getRelatedMap().entrySet())
         {
@@ -375,11 +375,31 @@ public class WordnetHelper
                 {
                     ISynset relatedSynset = wordnet.getSynset(iwd);
                     String relatedSynsetKey = "" + relatedSynset.getPOS().getTag() + relatedSynset.getOffset();
-                    hypernyms.add(relatedSynsetKey);
+                    relatedSynsetKeys.add(relatedSynsetKey);
                 }
             }
         }
-        return hypernyms;
+        return relatedSynsetKeys;
+    }
+
+    private List<String> loadLexicalRelationsBySymbol(IWord word, String relationSymbol)
+    {
+        List<String> relatedSynsetKeys = new ArrayList<>();
+        // lexical relations
+        for (Map.Entry<IPointer, List<IWordID>> iPointerListEntry : word.getRelatedMap().entrySet())
+        {
+            if (iPointerListEntry.getKey().getSymbol().equals(relationSymbol))
+            {
+                for (IWordID iwd : iPointerListEntry.getValue())
+                {
+                    IWord relatedWord = wordnet.getWord(iwd);
+                    ISynset relatedSynset = relatedWord.getSynset();
+                    String relatedSynsetKey = "" + relatedSynset.getPOS().getTag() + relatedSynset.getOffset();
+                    relatedSynsetKeys.add(relatedSynsetKey);
+                }
+            }
+        }
+        return relatedSynsetKeys;
     }
 
 }
