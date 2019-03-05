@@ -22,7 +22,11 @@ public class WordnetHelper
     private Map<String, List<String>> senseToRelatedSynsets;
 
     private Map<String, List<String>> synsetToHypernymsSynsets;
-    
+
+    private Map<String, List<String>> synsetToInstanceHypernymsSynsets;
+
+    private Map<String, List<String>> synsetToAntonymsSynsets;
+
     private Map<String, List<String>> wordKeyToSenseList;
 
     private Map<String, String> senseKeyToSenseNumber;
@@ -109,12 +113,22 @@ public class WordnetHelper
     {
         return senseToRelatedSynsets.get(senseKey);
     }
-    
+
     public List<String> getHypernymSynsetKeysFromSynsetKey(String synsetKey)
     {
         return synsetToHypernymsSynsets.get(synsetKey);
     }
-    
+
+    public List<String> getInstanceHypernymSynsetKeysFromSynsetKey(String synsetKey)
+    {
+        return synsetToInstanceHypernymsSynsets.get(synsetKey);
+    }
+
+    public List<String> getAntonymSynsetKeysFromSynsetKey(String synsetKey)
+    {
+        return synsetToAntonymsSynsets.get(synsetKey);
+    }
+
     public Collection<String> getVocabulary()
     {
     	return wordKeyToSenseList.keySet();
@@ -218,6 +232,8 @@ public class WordnetHelper
         synsetToGloss = new HashMap<>();
         senseToRelatedSynsets = new HashMap<>();
         synsetToHypernymsSynsets = new HashMap<>();
+        synsetToInstanceHypernymsSynsets = new HashMap<>();
+        synsetToAntonymsSynsets = new HashMap<>();
         wordKeyToSenseList = new HashMap<>();
         senseKeyToSenseNumber = new HashMap<>();
         senseNumberToSenseKey = new HashMap<>();
@@ -285,10 +301,10 @@ public class WordnetHelper
             }
             senseKeyList.add(senseKey);
             senseToSynset.put(senseKey, synsetKey);
-            List<String> relatedSynsets = loadRelations(is, iw);
-            senseToRelatedSynsets.put(senseKey, relatedSynsets);
-            List<String> hypernyms = loadHypernyms(is);
-            synsetToHypernymsSynsets.put(synsetKey, hypernyms);
+            senseToRelatedSynsets.put(senseKey, loadRelations(is, iw));
+            synsetToHypernymsSynsets.put(synsetKey, loadHypernyms(is));
+            synsetToInstanceHypernymsSynsets.put(synsetKey, loadInstanceHypernyms(is));
+            synsetToAntonymsSynsets.put(synsetKey, loadAntonyms(is));
             if (wordKeyToSenseList.containsKey(wordKey))
             {
                 wordKeyToSenseList.get(wordKey).add(senseKey);
@@ -334,13 +350,28 @@ public class WordnetHelper
 
     private List<String> loadHypernyms(ISynset synset)
     {
+        return loadSemanticRelationsBySymbol(synset, "@");
+    }
+
+    private List<String> loadInstanceHypernyms(ISynset synset)
+    {
+        return loadSemanticRelationsBySymbol(synset, "@i");
+    }
+
+    private List<String> loadAntonyms(ISynset synset)
+    {
+        return loadSemanticRelationsBySymbol(synset, "!");
+    }
+
+    private List<String> loadSemanticRelationsBySymbol(ISynset synset, String relationSymbol)
+    {
         List<String> hypernyms = new ArrayList<>();
         // semantic relations
-        for (Map.Entry<IPointer, List<ISynsetID>> iPointerListEntry : synset.getRelatedMap().entrySet()) 
+        for (Map.Entry<IPointer, List<ISynsetID>> iPointerListEntry : synset.getRelatedMap().entrySet())
         {
-            if (iPointerListEntry.getKey().getSymbol().equals("@"))
+            if (iPointerListEntry.getKey().getSymbol().equals(relationSymbol))
             {
-                for (ISynsetID iwd : iPointerListEntry.getValue()) 
+                for (ISynsetID iwd : iPointerListEntry.getValue())
                 {
                     ISynset relatedSynset = wordnet.getSynset(iwd);
                     String relatedSynsetKey = "" + relatedSynset.getPOS().getTag() + relatedSynset.getOffset();
