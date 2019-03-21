@@ -299,6 +299,10 @@ public class WordnetHelper
             {
                 continue;
             }
+            if (senseKeyList.contains(senseKey)) // remove duplicates (e.g. a%1:10:00::)
+            {
+                continue;
+            }
             senseKeyList.add(senseKey);
             senseToSynset.put(senseKey, synsetKey);
             senseToRelatedSynsets.put(senseKey, loadRelations(is, iw));
