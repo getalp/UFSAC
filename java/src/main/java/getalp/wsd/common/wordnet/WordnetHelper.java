@@ -21,6 +21,8 @@ public class WordnetHelper
 
     private Map<String, List<String>> senseToRelatedSynsets;
 
+    private Map<String, List<String>> synsetToRelatedSynsets;
+
     private Map<String, List<String>> synsetToHypernymsSynsets;
 
     private Map<String, List<String>> synsetToInstanceHypernymsSynsets;
@@ -112,6 +114,11 @@ public class WordnetHelper
     public List<String> getRelatedSynsetsKeyFromSenseKey(String senseKey)
     {
         return senseToRelatedSynsets.get(senseKey);
+    }
+
+    public List<String> getRelatedSynsetsKeyFromSynsetKey(String synsetKey)
+    {
+        return synsetToRelatedSynsets.get(synsetKey);
     }
 
     public List<String> getHypernymSynsetKeysFromSynsetKey(String synsetKey)
@@ -231,6 +238,7 @@ public class WordnetHelper
         synsetToSenseList = new HashMap<>();
         synsetToGloss = new HashMap<>();
         senseToRelatedSynsets = new HashMap<>();
+        synsetToRelatedSynsets = new HashMap<>();
         synsetToHypernymsSynsets = new HashMap<>();
         synsetToInstanceHypernymsSynsets = new HashMap<>();
         synsetToAntonymsSynsets = new HashMap<>();
@@ -286,6 +294,11 @@ public class WordnetHelper
     {
         List<String> senseKeyList = new ArrayList<>();
         String synsetKey = "" + pos.getTag() + is.getOffset();
+
+        synsetToHypernymsSynsets.put(synsetKey, loadHypernyms(is));
+        synsetToInstanceHypernymsSynsets.put(synsetKey, loadInstanceHypernyms(is));
+        synsetToRelatedSynsets.put(synsetKey, loadSemanticRelations(is));
+
         for (IWord iw : is.getWords())
         {
             String lemma = iw.getLemma().toLowerCase();
@@ -306,8 +319,6 @@ public class WordnetHelper
             senseKeyList.add(senseKey);
             senseToSynset.put(senseKey, synsetKey);
             senseToRelatedSynsets.put(senseKey, loadRelations(is, iw));
-            synsetToHypernymsSynsets.put(synsetKey, loadHypernyms(is));
-            synsetToInstanceHypernymsSynsets.put(synsetKey, loadInstanceHypernyms(is));
             synsetToAntonymsSynsets.put(synsetKey, loadAntonyms(iw));
             if (wordKeyToSenseList.containsKey(wordKey))
             {
@@ -321,29 +332,47 @@ public class WordnetHelper
         synsetToSenseList.put(synsetKey, senseKeyList);
         synsetToGloss.put(synsetKey, new Sentence(is.getGloss()));
     }
-    
-    private List<String> loadRelations(ISynset synset, IWord word) 
+
+    private List<String> loadRelations(ISynset synset, IWord word)
     {
         List<String> relatedSynsets = new ArrayList<>();
 
         // semantic relations
-        for (Map.Entry<IPointer, List<ISynsetID>> iPointerListEntry : synset.getRelatedMap().entrySet()) 
+        for (Map.Entry<IPointer, List<ISynsetID>> iPointerListEntry : synset.getRelatedMap().entrySet())
         {
-            for (ISynsetID iwd : iPointerListEntry.getValue()) 
+            for (ISynsetID iwd : iPointerListEntry.getValue())
             {
                 ISynset relatedSynset = wordnet.getSynset(iwd);
                 String relatedSynsetKey = "" + relatedSynset.getPOS().getTag() + relatedSynset.getOffset();
                 relatedSynsets.add(relatedSynsetKey);
             }
         }
-        
+
         // lexical relations
-        for (Map.Entry<IPointer, List<IWordID>> iPointerListEntry : word.getRelatedMap().entrySet()) 
+        for (Map.Entry<IPointer, List<IWordID>> iPointerListEntry : word.getRelatedMap().entrySet())
         {
-            for (IWordID iwd : iPointerListEntry.getValue()) 
+            for (IWordID iwd : iPointerListEntry.getValue())
             {
                 IWord relatedWord = wordnet.getWord(iwd);
                 ISynset relatedSynset = relatedWord.getSynset();
+                String relatedSynsetKey = "" + relatedSynset.getPOS().getTag() + relatedSynset.getOffset();
+                relatedSynsets.add(relatedSynsetKey);
+            }
+        }
+
+        return relatedSynsets;
+    }
+
+    private List<String> loadSemanticRelations(ISynset synset)
+    {
+        List<String> relatedSynsets = new ArrayList<>();
+
+        // semantic relations
+        for (Map.Entry<IPointer, List<ISynsetID>> iPointerListEntry : synset.getRelatedMap().entrySet())
+        {
+            for (ISynsetID iwd : iPointerListEntry.getValue())
+            {
+                ISynset relatedSynset = wordnet.getSynset(iwd);
                 String relatedSynsetKey = "" + relatedSynset.getPOS().getTag() + relatedSynset.getOffset();
                 relatedSynsets.add(relatedSynsetKey);
             }
