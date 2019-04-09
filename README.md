@@ -16,9 +16,9 @@ This repository contains:
   * OMSTI
   * *Ontonotes (code to convert the original data only)*
   * Train-O-Matic
-  * SensEval 2 WSD task
+  * SensEval 2 WSD task (both from original data and from Raganato et al. (2017) framework are available)
   * SensEval 2 Lexical Sample task
-  * SensEval 3 task 1
+  * SensEval 3 task 1 (both from original data and from Raganato et al. (2017) framework are available)
   * SensEval 3 task 6
   * SemEval 2007 task 7 (both from original data and from Raganato et al. (2017) framework are available)
   * SemEval 2007 task 17 (both from original data and from Raganato et al. (2017) framework are available)
