@@ -8,8 +8,23 @@ The full article is available at the following URL: <http://www.lrec-conf.org/pr
 
 This repository contains:
 
-* The sense annotated corpora in UFSAC, the format described in the paper, in the folder **`corpus`** (**also available through direct links, see below**). Note that the files have been compressed using the tool `xz` and therefore needs to be decompressed with `unxz` or similar.
-
+* The sense annotated corpora in UFSAC, the format described in the paper, in the folder **`corpus`** (**also available through direct links, see below**). Note that the files have been compressed using the tool `xz` and therefore needs to be decompressed with `unxz` or similar. The last version (2.1) contains the following corpora:
+  * SemCor
+  * *DSO (code to convert the original data only)*
+  * WordNet Gloss Tagged
+  * MASC
+  * OMSTI
+  * *Ontonotes (code to convert the original data only)*
+  * Train-O-Matic
+  * SensEval 2 WSD task
+  * SensEval 2 Lexical Sample task
+  * SensEval 3 task 1
+  * SensEval 3 task 6
+  * SemEval 2007 task 7 (both from original data and from Raganato et al. (2017) framework are available)
+  * SemEval 2007 task 17 (both from original data and from Raganato et al. (2017) framework are available)
+  * SemEval 2013 task 12 (both from original data and from Raganato et al. (2017) framework are available)
+  * SemEval 2015 task 13 (both from original data and from Raganato et al. (2017) framework are available)
+  
 * The source code of the Java API and the scripts described in the paper, in the folder **`java`**.
 
 * Scripts for converting corpora from various formats (Semcor, DSO, OMSTI...) into UFSAC, converting UFSAC corpora into [*Raganato et al.*](http://lcl.uniroma1.it/wsdeval/data/EACL17_WSD_EvaluationFramework.pdf)'s format, computing MFS, etc., in the folder **`scripts`**
