@@ -12,7 +12,7 @@ This repository contains:
 The last version (2.1) contains the following corpora annotated with WordNet 3.0 sense keys:
   * SemCor
   * *DSO (code to convert the original data only)*
-  * WordNet Gloss Tagged
+  * WordNet Gloss Tagged (Princeton Annotated Gloss Corpus)
   * MASC
   * OMSTI
   * *Ontonotes (code to convert the original data only)*
