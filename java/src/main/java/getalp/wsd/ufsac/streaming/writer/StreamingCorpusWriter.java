@@ -2,6 +2,8 @@ package getalp.wsd.ufsac.streaming.writer;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.List;
 
 import getalp.wsd.common.xml.XMLHelper;
@@ -104,12 +106,24 @@ public class StreamingCorpusWriter
             throw new RuntimeException(e);
         }
     }
-    
+
     public void open(String path)
     {
         try
         {
             out = new BufferedWriter(new FileWriter(path));
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void open(Writer writer)
+    {
+        try
+        {
+            out = new BufferedWriter(writer);
         }
         catch (Exception e)
         {
