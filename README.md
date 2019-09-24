@@ -12,13 +12,13 @@ This repository contains:
 The last version (2.1) contains the following corpora annotated with WordNet 3.0 sense keys:
   * SemCor
   * *DSO (code to convert the original data only)*
-  * WordNet Gloss Tagged (Princeton Annotated Gloss Corpus)
+  * WordNet Gloss Tagged (Princeton WordNet Gloss Corpus)
   * MASC
   * OMSTI
   * *Ontonotes (code to convert the original data only)*
   * Train-O-Matic
-  * SensEval 2 WSD task (both from original data and from Raganato et al. (2017) framework are available)
-  * SensEval 2 Lexical Sample task
+  * SensEval 2 All-words task (both from original data and from Raganato et al. (2017) framework are available)
+  * SensEval 2 Lexical sample task
   * SensEval 3 task 1 (both from original data and from Raganato et al. (2017) framework are available)
   * SensEval 3 task 6
   * SemEval 2007 task 7 (both from original data and from Raganato et al. (2017) framework are available)
