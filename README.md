@@ -22,7 +22,7 @@ The last version (2.1) contains the following corpora annotated with WordNet 3.0
   * *Ontonotes (code to convert the original data only)*
   * Train-O-Matic  
     → file `trainomatic.xml`
-  * SensEval 2 All-words task (both from original data and from Raganato et al. (2017) framework are available)  
+  * SensEval 2 All-words task (both from original data and from Raganato et al. (2017) framework)  
     → files `senseval2.xml` and `raganato_senseval2.xml`
   * SensEval 2 Lexical sample task (train and test)  
     → files `senseval2_lexical_sample_train.xml` and `senseval2_lexical_sample_test.xml`
