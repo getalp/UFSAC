@@ -10,21 +10,36 @@ This repository contains:
 
 * The sense annotated corpora in UFSAC, the format described in the paper, in the folder **`corpus`** (**also available through direct links, see below**). Note that the files have been compressed using the tool `xz` and therefore needs to be decompressed with `unxz` or similar.  
 The last version (2.1) contains the following corpora annotated with WordNet 3.0 sense keys:
-  * SemCor
+  * SemCor  
+    → file `semcor.xml`
   * *DSO (code to convert the original data only)*
-  * WordNet Gloss Tagged (Princeton WordNet Gloss Corpus)
-  * MASC
-  * OMSTI
+  * WordNet Gloss Tagged (Princeton WordNet Gloss Corpus)  
+    → file `wngt.xml`
+  * MASC  
+    → file `masc.xml`
+  * OMSTI  
+    → file `omsti.xml`
   * *Ontonotes (code to convert the original data only)*
-  * Train-O-Matic
-  * SensEval 2 All-words task (both from original data and from Raganato et al. (2017) framework are available)
-  * SensEval 2 Lexical sample task
-  * SensEval 3 task 1 (both from original data and from Raganato et al. (2017) framework are available)
-  * SensEval 3 task 6
-  * SemEval 2007 task 7 (both from original data and from Raganato et al. (2017) framework are available)
-  * SemEval 2007 task 17 (both from original data and from Raganato et al. (2017) framework are available)
-  * SemEval 2013 task 12 (both from original data and from Raganato et al. (2017) framework are available)
-  * SemEval 2015 task 13 (both from original data and from Raganato et al. (2017) framework are available)
+  * Train-O-Matic  
+    → file `trainomatic.xml`
+  * SensEval 2 All-words task (both from original data and from Raganato et al. (2017) framework are available)  
+    → files `senseval2.xml` and `raganato_senseval2.xml`
+  * SensEval 2 Lexical sample task (train and test)  
+    → files `senseval2_lexical_sample_train.xml` and `senseval2_lexical_sample_test.xml`
+  * SensEval 3 task 1 (both from original data and from Raganato et al. (2017) framework)  
+    → files `senseval3task1.xml` and `raganato_senseval3.xml`
+  * SensEval 3 task 6 Lexical sample task (train and test)  
+    → files `senseval3task6_train.xml` and `senseval3task6_test.xml`
+  * SemEval 2007 task 7  
+    → file `semeval2007task7.xml`
+  * SemEval 2007 task 17 (both from original data and from Raganato et al. (2017) framework)  
+    → files `semeval2007task17.xml` and `raganato_semeval2007.xml`
+  * SemEval 2013 task 12 (both from original data and from Raganato et al. (2017) framework)  
+    → files `semeval2013task12.xml` and `raganato_semeval2013.xml`
+  * SemEval 2015 task 13 (both from original data and from Raganato et al. (2017) framework)  
+    → files `semeval2015task13.xml` and `raganato_semeval2015.xml`
+  * Concatenation of all SensEval and SemEval all-words tasks (from Raganato et al. (2017) framework)  
+    → file `raganato_ALL.xml`
   
 * The source code of the Java API and the scripts described in the paper, in the folder **`java`**.
 
