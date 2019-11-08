@@ -9,11 +9,14 @@ import java.util.*;
 
 public class RaganatoUnifiedConverterInverse implements UFSACConverter
 {
+    private int currentTargetID = 0;
+
     public void convert(String inpath, String outpath, int wnVersion)
     {
         try
         {
             Map<String, String> sensesById = new LinkedHashMap<>();
+            currentTargetID = 0;
             loadCorpus(inpath, outpath + ".data.xml", wnVersion, sensesById);
             saveSenses(outpath + ".gold.key.txt", sensesById);
         }
@@ -89,6 +92,11 @@ public class RaganatoUnifiedConverterInverse implements UFSACConverter
                     if (word.hasAnnotation(wnTag))
                     {
                         wordTag = "instance";
+                        if (!word.hasAnnotation("id"))
+                        {
+                            word.setAnnotation("id", "target_" + currentTargetID);
+                            currentTargetID++;
+                        }
                     }
                     String idTag = "";
                     if (word.hasAnnotation("id"))
