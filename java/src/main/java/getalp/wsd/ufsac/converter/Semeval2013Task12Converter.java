@@ -114,15 +114,25 @@ public class Semeval2013Task12Converter extends SAXBasicHandler implements UFSAC
 		}
 	}
 
-    public void convert(String inpath, String outpath, int wnVersion)
-    {
-        this.wnVersion = wnVersion;
-        out = new StreamingCorpusWriterDocument();
-        out.open(outpath);
-        loadSenses(inpath + "/keys/gold/wordnet/wordnet." + lang + ".key");
-        loadCorpus(inpath + "/data/multilingual-all-words." + lang + ".xml");
-        out.close();
-    }
+	public void convert(String inpath, String outpath, int wnVersion)
+	{
+		this.wnVersion = wnVersion;
+		out = new StreamingCorpusWriterDocument();
+		out.open(outpath);
+		loadSenses(inpath + "/keys/gold/wordnet/wordnet." + lang + ".key");
+		loadCorpus(inpath + "/data/multilingual-all-words." + lang + ".xml");
+		out.close();
+	}
+
+	public void convert(String inputCorpusPath, String inputKeyPath, String outputCorpusPath, int wnVersion)
+	{
+		this.wnVersion = wnVersion;
+		out = new StreamingCorpusWriterDocument();
+		out.open(outputCorpusPath);
+		loadSenses(inputKeyPath);
+		loadCorpus(inputCorpusPath);
+		out.close();
+	}
 
 	public void loadCorpus(String path)
 	{

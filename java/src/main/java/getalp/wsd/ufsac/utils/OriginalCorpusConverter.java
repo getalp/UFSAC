@@ -31,7 +31,7 @@ public class OriginalCorpusConverter
     
     private final String lemmaAnnotation = "lemma";
 
-    private final Map<String, Integer> wordAnnotationOrder = initMapAnnotationsOrder();
+    private static final Map<String, Integer> wordAnnotationOrder = initMapAnnotationsOrder();
     
     private CorpusPOSTagger posTagger;
     
@@ -73,7 +73,7 @@ public class OriginalCorpusConverter
         reorganizeWordAnnotations(corpusPath);
     }
 
-    private void cleanWords(String corpusPath)
+    public static void cleanWords(String corpusPath)
     {
         System.out.println("[" + corpusPath + "] Cleaning words...");
         StreamingCorpusModifierWord inout = new StreamingCorpusModifierWord()
@@ -89,7 +89,7 @@ public class OriginalCorpusConverter
         inout.load(corpusPath);
     }
     
-    private void normalizePunctuation(String corpusPath)
+    public static void normalizePunctuation(String corpusPath)
     {
         System.out.println("[" + corpusPath + "] Normalizing punctuation...");
         StreamingCorpusModifierWord inout = new StreamingCorpusModifierWord()
@@ -149,7 +149,7 @@ public class OriginalCorpusConverter
         return word;
     }
     
-    private void removeEmptyWords(String corpusPath)
+    public static void removeEmptyWords(String corpusPath)
     {
         System.out.println("[" + corpusPath + "] Removing empty words...");
         StreamingCorpusModifier inout = new StreamingCorpusModifier()
@@ -167,7 +167,7 @@ public class OriginalCorpusConverter
         inout.load(corpusPath);
     }
 
-    private void removeEmptySentences(String corpusPath)
+    public static void removeEmptySentences(String corpusPath)
     {
         System.out.println("[" + corpusPath + "] Removing empty sentences...");
         StreamingCorpusModifier inout = new StreamingCorpusModifier()
@@ -294,7 +294,7 @@ public class OriginalCorpusConverter
         System.out.println("\tFound " + total.obj + " duplicated sentences in " + inputPath);
     }
     
-    private void removeInvalidWordnetAnnotations(String corpusPath, int wnVersion)
+    public static void removeInvalidWordnetAnnotations(String corpusPath, int wnVersion)
     {
         System.out.println("[" + corpusPath + "] Removing invalid WN " + wnVersion + " annotations...");
 
@@ -334,7 +334,7 @@ public class OriginalCorpusConverter
         System.out.println("\tOn a total of " + total.obj + " WN " + wnVersion + " annotations, " + incorrect.obj + " were incorrect and deleted");
     }
 
-    private void convertWordnetAnnotations(String inputPath, int wnVersionIn, int wnVersionOut)
+    public static void convertWordnetAnnotations(String inputPath, int wnVersionIn, int wnVersionOut)
     {
         if (wnVersionIn == wnVersionOut) return;
         System.out.println("[" + inputPath + "] Converting WN annotations from WN " + wnVersionIn + " to WN " + wnVersionOut + "...");
@@ -569,12 +569,10 @@ public class OriginalCorpusConverter
         System.out.println("\tRemoved " + countRemoved.obj + " sense tags");
     }
     
-    private void reorganizeWordAnnotations(String corpusPath)
+    public static void reorganizeWordAnnotations(String corpusPath)
     {
         System.out.println("[" + corpusPath + "] Reorganizing word annotations...");
 
-        if (wordAnnotationOrder == null) initMapAnnotationsOrder();
-        
         StreamingCorpusModifierWord inout = new StreamingCorpusModifierWord()
         {
             public void modifyWord(Word word)
