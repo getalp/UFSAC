@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'https://repo.maven.apache.org/maven2'
+    }
+}
+
+dependencies {
+    implementation 'edu.mit:jwi:2.2.3'
+    implementation 'edu.stanford.nlp:stanford-parser:3.7.0'
+    implementation 'org.apache.commons:commons-text:1.4'
+    implementation 'commons-cli:commons-cli:1.4'
+}
+
+group = 'getalp'
+version = '1.0-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
