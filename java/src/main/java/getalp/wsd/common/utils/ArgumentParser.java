@@ -122,12 +122,12 @@ public class ArgumentParser
 
 	public int getArgValueInteger(String name)
 	{
-		return Integer.valueOf(getArgValue(name));
+		return Integer.parseInt(getArgValue(name));
 	}
 
 	public double getArgValueDouble(String name)
 	{
-		return Double.valueOf(getArgValue(name));
+		return Double.parseDouble(getArgValue(name));
 	}
 
 	public List<String> getArgValueList(String name)
@@ -138,6 +138,16 @@ public class ArgumentParser
 	public List<Boolean> getArgValueBooleanList(String name)
 	{
 		return getArgValueList(name).stream().map(Boolean::valueOf).collect(Collectors.toList());
+	}
+
+	public List<Integer> getArgValueIntegerList(String name)
+	{
+		return getArgValueList(name).stream().map(Integer::valueOf).collect(Collectors.toList());
+	}
+
+	public List<Double> getArgValueDoubleList(String name)
+	{
+		return getArgValueList(name).stream().map(Double::valueOf).collect(Collectors.toList());
 	}
 
     @SuppressWarnings("unchecked")
