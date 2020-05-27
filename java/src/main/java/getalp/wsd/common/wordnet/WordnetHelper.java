@@ -27,6 +27,10 @@ public class WordnetHelper
 
     private Map<String, List<String>> synsetToInstanceHypernymsSynsets;
 
+    private Map<String, List<String>> synsetToHyponymsSynsets;
+
+    private Map<String, List<String>> synsetToInstanceHyponymsSynsets;
+
     private Map<String, List<String>> synsetToAntonymsSynsets;
 
     private Map<String, List<String>> wordKeyToSenseList;
@@ -129,6 +133,16 @@ public class WordnetHelper
     public List<String> getInstanceHypernymSynsetKeysFromSynsetKey(String synsetKey)
     {
         return synsetToInstanceHypernymsSynsets.get(synsetKey);
+    }
+
+    public List<String> getHyponymSynsetKeysFromSynsetKey(String synsetKey)
+    {
+        return synsetToHyponymsSynsets.get(synsetKey);
+    }
+
+    public List<String> getInstanceHyponymSynsetKeysFromSynsetKey(String synsetKey)
+    {
+        return synsetToInstanceHyponymsSynsets.get(synsetKey);
     }
 
     public List<String> getAntonymSynsetKeysFromSynsetKey(String synsetKey)
@@ -241,6 +255,8 @@ public class WordnetHelper
         synsetToRelatedSynsets = new HashMap<>();
         synsetToHypernymsSynsets = new HashMap<>();
         synsetToInstanceHypernymsSynsets = new HashMap<>();
+        synsetToHyponymsSynsets = new HashMap<>();
+        synsetToInstanceHyponymsSynsets = new HashMap<>();
         synsetToAntonymsSynsets = new HashMap<>();
         wordKeyToSenseList = new HashMap<>();
         senseKeyToSenseNumber = new HashMap<>();
@@ -297,6 +313,8 @@ public class WordnetHelper
 
         synsetToHypernymsSynsets.put(synsetKey, loadHypernyms(is));
         synsetToInstanceHypernymsSynsets.put(synsetKey, loadInstanceHypernyms(is));
+        synsetToHyponymsSynsets.put(synsetKey, loadHyponyms(is));
+        synsetToInstanceHyponymsSynsets.put(synsetKey, loadInstanceHyponyms(is));
         synsetToRelatedSynsets.put(synsetKey, loadSemanticRelations(is));
 
         for (IWord iw : is.getWords())
@@ -389,6 +407,16 @@ public class WordnetHelper
     private List<String> loadInstanceHypernyms(ISynset synset)
     {
         return loadSemanticRelationsBySymbol(synset, "@i");
+    }
+
+    private List<String> loadHyponyms(ISynset synset)
+    {
+        return loadSemanticRelationsBySymbol(synset, "~");
+    }
+
+    private List<String> loadInstanceHyponyms(ISynset synset)
+    {
+        return loadSemanticRelationsBySymbol(synset, "~i");
     }
 
     private List<String> loadAntonyms(IWord word)
