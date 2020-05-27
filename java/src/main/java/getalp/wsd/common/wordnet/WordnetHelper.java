@@ -87,12 +87,12 @@ public class WordnetHelper
     
     public List<String> getSenseKeyListFromSynsetKey(String synsetKey)
     {
-        return synsetToSenseList.get(synsetKey);
+        return Collections.unmodifiableList(synsetToSenseList.get(synsetKey));
     }
     
     public List<String> getSenseKeyListFromSenseKey(String senseKey)
     {
-        return synsetToSenseList.get(senseToSynset.get(senseKey));
+        return Collections.unmodifiableList(synsetToSenseList.get(senseToSynset.get(senseKey)));
     }
     
     public String getSenseKeyFromSenseNumber(String senseNumber)
@@ -117,37 +117,37 @@ public class WordnetHelper
 
     public List<String> getRelatedSynsetsKeyFromSenseKey(String senseKey)
     {
-        return senseToRelatedSynsets.get(senseKey);
+        return Collections.unmodifiableList(senseToRelatedSynsets.get(senseKey));
     }
 
     public List<String> getRelatedSynsetsKeyFromSynsetKey(String synsetKey)
     {
-        return synsetToRelatedSynsets.get(synsetKey);
+        return Collections.unmodifiableList(synsetToRelatedSynsets.get(synsetKey));
     }
 
     public List<String> getHypernymSynsetKeysFromSynsetKey(String synsetKey)
     {
-        return synsetToHypernymsSynsets.get(synsetKey);
+        return Collections.unmodifiableList(synsetToHypernymsSynsets.get(synsetKey));
     }
 
     public List<String> getInstanceHypernymSynsetKeysFromSynsetKey(String synsetKey)
     {
-        return synsetToInstanceHypernymsSynsets.get(synsetKey);
+        return Collections.unmodifiableList(synsetToInstanceHypernymsSynsets.get(synsetKey));
     }
 
     public List<String> getHyponymSynsetKeysFromSynsetKey(String synsetKey)
     {
-        return synsetToHyponymsSynsets.get(synsetKey);
+        return Collections.unmodifiableList(synsetToHyponymsSynsets.get(synsetKey));
     }
 
     public List<String> getInstanceHyponymSynsetKeysFromSynsetKey(String synsetKey)
     {
-        return synsetToInstanceHyponymsSynsets.get(synsetKey);
+        return Collections.unmodifiableList(synsetToInstanceHyponymsSynsets.get(synsetKey));
     }
 
     public List<String> getAntonymSynsetKeysFromSynsetKey(String synsetKey)
     {
-        return synsetToAntonymsSynsets.get(synsetKey);
+        return Collections.unmodifiableList(synsetToAntonymsSynsets.get(synsetKey));
     }
 
     public Collection<String> getVocabulary()
@@ -162,7 +162,7 @@ public class WordnetHelper
     
     public List<String> getSenseKeyListFromWordKey(String wordKey)
     {
-    	return wordKeyToSenseList.get(wordKey);
+    	return Collections.unmodifiableList(wordKeyToSenseList.get(wordKey));
     }
 
     public String getFirstSenseKeyFromWordKey(String wordKey)
