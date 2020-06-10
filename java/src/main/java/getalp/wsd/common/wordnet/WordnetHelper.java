@@ -33,6 +33,8 @@ public class WordnetHelper
 
     private Map<String, List<String>> synsetToAntonymsSynsets;
 
+    private Map<String, List<String>> synsetToSimilarToSynsets;
+
     private Map<String, List<String>> wordKeyToSenseList;
 
     private Map<String, String> senseKeyToSenseNumber;
@@ -150,6 +152,11 @@ public class WordnetHelper
         return Collections.unmodifiableList(synsetToAntonymsSynsets.get(synsetKey));
     }
 
+    public List<String> getSimilarToSynsetKeysFromSynsetKey(String synsetKey)
+    {
+        return Collections.unmodifiableList(synsetToSimilarToSynsets.get(synsetKey));
+    }
+
     public Collection<String> getVocabulary()
     {
     	return wordKeyToSenseList.keySet();
@@ -258,6 +265,7 @@ public class WordnetHelper
         synsetToHyponymsSynsets = new HashMap<>();
         synsetToInstanceHyponymsSynsets = new HashMap<>();
         synsetToAntonymsSynsets = new HashMap<>();
+        synsetToSimilarToSynsets = new HashMap<>();
         wordKeyToSenseList = new HashMap<>();
         senseKeyToSenseNumber = new HashMap<>();
         senseNumberToSenseKey = new HashMap<>();
@@ -316,6 +324,8 @@ public class WordnetHelper
         synsetToHyponymsSynsets.put(synsetKey, loadHyponyms(is));
         synsetToInstanceHyponymsSynsets.put(synsetKey, loadInstanceHyponyms(is));
         synsetToRelatedSynsets.put(synsetKey, loadSemanticRelations(is));
+        Set<String> antonymsSynsets = new HashSet<>();
+        synsetToSimilarToSynsets.put(synsetKey, loadSimilarTo(is));
 
         for (IWord iw : is.getWords())
         {
@@ -337,7 +347,7 @@ public class WordnetHelper
             senseKeyList.add(senseKey);
             senseToSynset.put(senseKey, synsetKey);
             senseToRelatedSynsets.put(senseKey, loadRelations(is, iw));
-            synsetToAntonymsSynsets.put(synsetKey, loadAntonyms(iw));
+            antonymsSynsets.addAll(loadAntonyms(iw));
             if (wordKeyToSenseList.containsKey(wordKey))
             {
                 wordKeyToSenseList.get(wordKey).add(senseKey);
@@ -347,6 +357,9 @@ public class WordnetHelper
                 wordKeyToSenseList.put(wordKey, new ArrayList<>(Collections.singletonList(senseKey)));
             }
         }
+
+        synsetToAntonymsSynsets.put(synsetKey, new ArrayList<>(antonymsSynsets));
+
         synsetToSenseList.put(synsetKey, senseKeyList);
         synsetToGloss.put(synsetKey, new Sentence(is.getGloss()));
     }
@@ -422,6 +435,11 @@ public class WordnetHelper
     private List<String> loadAntonyms(IWord word)
     {
         return loadLexicalRelationsBySymbol(word, "!");
+    }
+
+    private List<String> loadSimilarTo(ISynset synset)
+    {
+        return loadSemanticRelationsBySymbol(synset, "&");
     }
 
     private List<String> loadSemanticRelationsBySymbol(ISynset synset, String relationSymbol)
