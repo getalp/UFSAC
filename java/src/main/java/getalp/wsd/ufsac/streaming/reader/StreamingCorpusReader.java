@@ -1,14 +1,15 @@
 package getalp.wsd.ufsac.streaming.reader;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import getalp.wsd.common.xml.XMLHelper;
 import getalp.wsd.ufsac.core.*;
 
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 public class StreamingCorpusReader
 {
@@ -61,7 +62,9 @@ public class StreamingCorpusReader
     {
         try 
         {
-            XMLReader saxReader = XMLReaderFactory.createXMLReader();
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            SAXParser parser = parserFactory.newSAXParser();
+            XMLReader saxReader = parser.getXMLReader();
             SAXHandler handler = new SAXHandler();
             saxReader.setContentHandler(handler);
             saxReader.parse(path);
@@ -75,7 +78,7 @@ public class StreamingCorpusReader
 	private class SAXHandler extends DefaultHandler
 	{
 	    @Override
-		public void startElement(String uri, String localName, String qname, Attributes atts) throws SAXException
+		public void startElement(String uri, String localName, String qname, Attributes atts)
 		{
 	        if (localName.equals("corpus"))
 	        {
@@ -100,7 +103,7 @@ public class StreamingCorpusReader
 		}
 
 	    @Override
-		public void endElement(String uri, String localName, String qname) throws SAXException
+		public void endElement(String uri, String localName, String qname)
 		{
             if (localName.equals("corpus"))
             {

@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Scanner;
 
 import org.xml.sax.*;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import getalp.wsd.common.utils.POSConverter;
 import getalp.wsd.common.utils.StringUtils;
@@ -19,6 +18,9 @@ import getalp.wsd.ufsac.core.Word;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterDocument;
 
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 public class Semeval2015Task13Converter extends DefaultHandler implements UFSACConverter
 {
@@ -174,7 +176,9 @@ public class Semeval2015Task13Converter extends DefaultHandler implements UFSACC
 	{
 		try
 		{
-			XMLReader saxReader = XMLReaderFactory.createXMLReader();
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            SAXParser parser = parserFactory.newSAXParser();
+            XMLReader saxReader = parser.getXMLReader();
 			saxReader.setContentHandler(this);
 			saxReader.parse(path);
 		}

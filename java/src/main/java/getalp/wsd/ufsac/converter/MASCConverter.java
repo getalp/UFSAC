@@ -12,13 +12,15 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import getalp.wsd.common.wordnet.WordnetHelper;
 import getalp.wsd.common.xml.SAXEntityResolverIgnoringDTD;
 import getalp.wsd.ufsac.core.Sentence;
 import getalp.wsd.ufsac.core.Word;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterSentence;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 public class MASCConverter extends DefaultHandler implements UFSACConverter
 {
@@ -118,7 +120,9 @@ public class MASCConverter extends DefaultHandler implements UFSACConverter
     
     private void loadCorpusFile(String inputPath) throws Exception
     {
-        XMLReader saxReader = XMLReaderFactory.createXMLReader();
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        SAXParser parser = parserFactory.newSAXParser();
+        XMLReader saxReader = parser.getXMLReader();
         saxReader.setContentHandler(this);
         saxReader.setEntityResolver(new SAXEntityResolverIgnoringDTD());
         currentSentence = new Sentence();

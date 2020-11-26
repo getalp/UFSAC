@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Scanner;
 
 import org.xml.sax.*;
-import org.xml.sax.helpers.XMLReaderFactory;
 import getalp.wsd.common.utils.RegExp;
 import getalp.wsd.common.utils.StringUtils;
 import getalp.wsd.common.xml.SAXBasicHandler;
@@ -17,6 +16,9 @@ import getalp.wsd.ufsac.core.Paragraph;
 import getalp.wsd.ufsac.core.Sentence;
 import getalp.wsd.ufsac.core.Word;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterDocument;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 public class RaganatoUnifiedConverter implements UFSACConverter
 {
@@ -57,7 +59,9 @@ public class RaganatoUnifiedConverter implements UFSACConverter
     public void loadCorpus(String inpath, String outpath, int wnVersion, Map<String, String> sensesById) throws Exception
     {
         StreamingCorpusWriterDocument out = new StreamingCorpusWriterDocument();
-        XMLReader saxReader = XMLReaderFactory.createXMLReader();
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        SAXParser parser = parserFactory.newSAXParser();
+        XMLReader saxReader = parser.getXMLReader();
         saxReader.setContentHandler(new SAXBasicHandler()
         {
             private Document currentDocument;

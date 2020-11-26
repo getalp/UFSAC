@@ -1,8 +1,6 @@
 package getalp.wsd.ufsac.converter;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.xml.sax.*;
-import org.xml.sax.helpers.XMLReaderFactory;
 import edu.stanford.nlp.process.PTBTokenizer.PTBTokenizerFactory;
 import edu.stanford.nlp.process.Tokenizer;
 import edu.stanford.nlp.process.TokenizerFactory;
@@ -15,6 +13,8 @@ import getalp.wsd.ufsac.core.Sentence;
 import getalp.wsd.ufsac.core.Word;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterSentence;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.StringReader;
@@ -84,7 +84,9 @@ public class Senseval2LexicalSampleConverter implements UFSACConverter
     private void loadCorpus(String inpath, String outpath, int wnVersion) throws Exception
     {
     	StreamingCorpusWriterSentence out = new StreamingCorpusWriterSentence();
-        XMLReader saxReader = XMLReaderFactory.createXMLReader();
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        SAXParser parser = parserFactory.newSAXParser();
+        XMLReader saxReader = parser.getXMLReader();
         saxReader.setContentHandler(new SAXBasicHandler()
 		{
         	private String currentTokenId;
@@ -159,12 +161,21 @@ public class Senseval2LexicalSampleConverter implements UFSACConverter
         
         return tokenized;
     }
+
+    private String unescapeXml(String str)
+    {
+        return str.replace("&lt;", "<")
+                  .replace("&gt;", ">")
+                  .replace("&amp;", "&")
+                  .replace("&quot;", "\"")
+                  .replace("&apos;", "'");
+    }
     
     private String clean(String string)
     {
         String cleaned = string;
         cleaned = cleaned.replaceAll("\\[.*?\\]", "");
-        cleaned = StringEscapeUtils.unescapeXml(cleaned);
+        cleaned = unescapeXml(cleaned);
         return cleaned;
     }
 }

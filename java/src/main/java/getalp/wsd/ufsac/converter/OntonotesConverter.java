@@ -14,7 +14,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import getalp.wsd.common.utils.PercentProgressDisplayer;
 import getalp.wsd.common.utils.RegExp;
@@ -23,6 +22,9 @@ import getalp.wsd.common.wordnet.WordnetHelper;
 import getalp.wsd.ufsac.core.Sentence;
 import getalp.wsd.ufsac.core.Word;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterSentence;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 public class OntonotesConverter implements UFSACConverter
 {    
@@ -240,7 +242,9 @@ public class OntonotesConverter implements UFSACConverter
         
     private void loadSenseMapping(String filePath) throws Exception
     {
-        XMLReader saxReader = XMLReaderFactory.createXMLReader();
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        SAXParser parser = parserFactory.newSAXParser();
+        XMLReader saxReader = parser.getXMLReader();
         SenseMappingXMLHandler handler = new SenseMappingXMLHandler();
         handler.onWordKey = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.lastIndexOf(".xml"));
         handler.wnWordKey = handler.onWordKey.replace("-", "%");

@@ -5,7 +5,6 @@ import java.util.List;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import getalp.wsd.common.utils.StringUtils;
 import getalp.wsd.common.xml.SAXBasicHandler;
@@ -14,6 +13,9 @@ import getalp.wsd.ufsac.core.Paragraph;
 import getalp.wsd.ufsac.core.Sentence;
 import getalp.wsd.ufsac.core.Word;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterDocument;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 public class MihalceaSensevalConverter implements UFSACConverter
 {
@@ -30,7 +32,9 @@ public class MihalceaSensevalConverter implements UFSACConverter
         StreamingCorpusWriterDocument out = new StreamingCorpusWriterDocument();
         try
         {
-            XMLReader saxReader = XMLReaderFactory.createXMLReader();
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            SAXParser parser = parserFactory.newSAXParser();
+            XMLReader saxReader = parser.getXMLReader();
             saxReader.setContentHandler(new SAXBasicHandler()
             {
                 private Document currentDocument;

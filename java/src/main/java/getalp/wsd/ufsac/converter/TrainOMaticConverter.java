@@ -2,12 +2,14 @@ package getalp.wsd.ufsac.converter;
 
 import java.util.*;
 import org.xml.sax.*;
-import org.xml.sax.helpers.*;
 import getalp.wsd.common.utils.RegExp;
 import getalp.wsd.common.utils.SenseKeyUtils;
 import getalp.wsd.common.xml.SAXBasicHandler;
 import getalp.wsd.ufsac.core.*;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterSentence;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 public class TrainOMaticConverter implements UFSACConverter
 {        
@@ -27,7 +29,9 @@ public class TrainOMaticConverter implements UFSACConverter
     public void loadFile(String inPath, String outPath, int wnVersion) throws Exception
     {
     	StreamingCorpusWriterSentence out = new StreamingCorpusWriterSentence();
-        XMLReader saxReader = XMLReaderFactory.createXMLReader();
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        SAXParser parser = parserFactory.newSAXParser();
+        XMLReader saxReader = parser.getXMLReader();
         saxReader.setContentHandler(new SAXBasicHandler()
         {
             private Sentence currentSentence;

@@ -15,6 +15,9 @@ import getalp.wsd.common.utils.StringUtils;
 import getalp.wsd.ufsac.core.*;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterDocument;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 public class SemcorConverter extends DefaultHandler implements UFSACConverter
 {
 	private StreamingCorpusWriterDocument out;
@@ -147,7 +150,9 @@ public class SemcorConverter extends DefaultHandler implements UFSACConverter
 
 	private void readFile(String path) throws Exception
 	{
-		XMLReader saxReader = XMLReaderFactory.createXMLReader();
+		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+		SAXParser parser = parserFactory.newSAXParser();
+		XMLReader saxReader = parser.getXMLReader();
 		saxReader.setContentHandler(this);
 		saxReader.parse(path);
 	}

@@ -6,7 +6,6 @@ import java.nio.file.*;
 import java.util.stream.*;
 import java.util.*;
 import org.xml.sax.*;
-import org.xml.sax.helpers.*;
 
 import getalp.wsd.common.utils.PercentProgressDisplayer;
 import getalp.wsd.common.utils.RegExp;
@@ -17,6 +16,9 @@ import getalp.wsd.common.xml.SAXBasicHandler;
 import getalp.wsd.common.xml.SAXEntityResolverIgnoringDTD;
 import getalp.wsd.ufsac.core.*;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterSentence;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 public class OMSTIConverter implements UFSACConverter
 {
@@ -89,7 +91,9 @@ public class OMSTIConverter implements UFSACConverter
 
     public void loadFile(String path) throws Exception
     {
-        XMLReader saxReader = XMLReaderFactory.createXMLReader();
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        SAXParser parser = parserFactory.newSAXParser();
+        XMLReader saxReader = parser.getXMLReader();
         saxReader.setContentHandler(new SAXBasicHandler()
         {
             private Sentence currentSentence;

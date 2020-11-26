@@ -1,7 +1,6 @@
 package getalp.wsd.ufsac.converter;
 
 import org.xml.sax.*;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import getalp.wsd.common.utils.StringUtils;
 import getalp.wsd.common.xml.SAXEntityResolverIgnoringDTD;
@@ -12,6 +11,9 @@ import getalp.wsd.ufsac.core.Word;
 import getalp.wsd.ufsac.streaming.writer.StreamingCorpusWriterDocument;
 
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -161,7 +163,9 @@ public class Semeval2007Task7Converter extends DefaultHandler implements UFSACCo
 	{
         try
         {
-            XMLReader saxReader = XMLReaderFactory.createXMLReader();
+			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			SAXParser parser = parserFactory.newSAXParser();
+			XMLReader saxReader = parser.getXMLReader();
             saxReader.setContentHandler(this);
             saxReader.setEntityResolver(new SAXEntityResolverIgnoringDTD());
             saxReader.parse(path);
