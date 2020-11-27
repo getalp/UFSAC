@@ -50,6 +50,9 @@ public class WordnetHelper
     private WordnetStemmer morphy;
 
 
+    public static boolean loadGlosses = true;
+
+
     private static final Map<Integer, WordnetHelper> loadedHelpers = new HashMap<>();
 
     
@@ -361,7 +364,10 @@ public class WordnetHelper
         synsetToAntonymsSynsets.put(synsetKey, new ArrayList<>(antonymsSynsets));
 
         synsetToSenseList.put(synsetKey, senseKeyList);
-        synsetToGloss.put(synsetKey, new Sentence(is.getGloss()));
+        if (loadGlosses)
+        {
+            synsetToGloss.put(synsetKey, new Sentence(is.getGloss()));
+        }
     }
 
     private List<String> loadRelations(ISynset synset, IWord word)
