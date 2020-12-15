@@ -164,6 +164,7 @@ public class Semeval2007Task7Converter extends DefaultHandler implements UFSACCo
         try
         {
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			parserFactory.setNamespaceAware(true);
 			SAXParser parser = parserFactory.newSAXParser();
 			XMLReader saxReader = parser.getXMLReader();
             saxReader.setContentHandler(this);

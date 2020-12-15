@@ -243,6 +243,7 @@ public class OntonotesConverter implements UFSACConverter
     private void loadSenseMapping(String filePath) throws Exception
     {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true);
         SAXParser parser = parserFactory.newSAXParser();
         XMLReader saxReader = parser.getXMLReader();
         SenseMappingXMLHandler handler = new SenseMappingXMLHandler();

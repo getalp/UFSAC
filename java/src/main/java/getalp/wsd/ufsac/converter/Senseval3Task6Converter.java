@@ -77,8 +77,9 @@ public class Senseval3Task6Converter implements UFSACConverter
     		writer.write(line + "\n");
     	}
     	writer.close();
-        SAXParserFactory saxFactory = SAXParserFactory.newInstance();
-        SAXParser parser = saxFactory.newSAXParser();
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true);
+        SAXParser parser = parserFactory.newSAXParser();
         parser.parse(
                 new SequenceInputStream(
                     Collections.enumeration(Arrays.asList(
@@ -190,8 +191,9 @@ public class Senseval3Task6Converter implements UFSACConverter
     	writer.close();
     	
     	StreamingCorpusWriterSentence out = new StreamingCorpusWriterSentence();
-        SAXParserFactory saxFactory = SAXParserFactory.newInstance();
-        SAXParser parser = saxFactory.newSAXParser();
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true);
+        SAXParser parser = parserFactory.newSAXParser();
 
         out.open(outpath);
         

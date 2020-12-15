@@ -151,6 +151,7 @@ public class SemcorConverter extends DefaultHandler implements UFSACConverter
 	private void readFile(String path) throws Exception
 	{
 		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+		parserFactory.setNamespaceAware(true);
 		SAXParser parser = parserFactory.newSAXParser();
 		XMLReader saxReader = parser.getXMLReader();
 		saxReader.setContentHandler(this);

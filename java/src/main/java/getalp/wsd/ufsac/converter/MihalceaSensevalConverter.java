@@ -33,6 +33,7 @@ public class MihalceaSensevalConverter implements UFSACConverter
         try
         {
             SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            parserFactory.setNamespaceAware(true);
             SAXParser parser = parserFactory.newSAXParser();
             XMLReader saxReader = parser.getXMLReader();
             saxReader.setContentHandler(new SAXBasicHandler()

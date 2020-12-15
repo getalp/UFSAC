@@ -121,6 +121,7 @@ public class MASCConverter extends DefaultHandler implements UFSACConverter
     private void loadCorpusFile(String inputPath) throws Exception
     {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true);
         SAXParser parser = parserFactory.newSAXParser();
         XMLReader saxReader = parser.getXMLReader();
         saxReader.setContentHandler(this);

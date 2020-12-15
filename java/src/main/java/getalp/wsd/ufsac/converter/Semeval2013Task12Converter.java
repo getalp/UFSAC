@@ -141,6 +141,7 @@ public class Semeval2013Task12Converter extends SAXBasicHandler implements UFSAC
 		try
 		{
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			parserFactory.setNamespaceAware(true);
 			SAXParser parser = parserFactory.newSAXParser();
 			XMLReader saxReader = parser.getXMLReader();
 			saxReader.setContentHandler(this);

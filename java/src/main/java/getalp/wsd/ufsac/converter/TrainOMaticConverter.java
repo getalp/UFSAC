@@ -30,6 +30,7 @@ public class TrainOMaticConverter implements UFSACConverter
     {
     	StreamingCorpusWriterSentence out = new StreamingCorpusWriterSentence();
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true);
         SAXParser parser = parserFactory.newSAXParser();
         XMLReader saxReader = parser.getXMLReader();
         saxReader.setContentHandler(new SAXBasicHandler()

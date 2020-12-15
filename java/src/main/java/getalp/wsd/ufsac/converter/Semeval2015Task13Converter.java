@@ -177,6 +177,7 @@ public class Semeval2015Task13Converter extends DefaultHandler implements UFSACC
 		try
 		{
             SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            parserFactory.setNamespaceAware(true);
             SAXParser parser = parserFactory.newSAXParser();
             XMLReader saxReader = parser.getXMLReader();
 			saxReader.setContentHandler(this);

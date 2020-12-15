@@ -92,6 +92,7 @@ public class OMSTIConverter implements UFSACConverter
     public void loadFile(String path) throws Exception
     {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true);
         SAXParser parser = parserFactory.newSAXParser();
         XMLReader saxReader = parser.getXMLReader();
         saxReader.setContentHandler(new SAXBasicHandler()

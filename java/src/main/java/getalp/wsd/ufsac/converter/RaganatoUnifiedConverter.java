@@ -60,6 +60,7 @@ public class RaganatoUnifiedConverter implements UFSACConverter
     {
         StreamingCorpusWriterDocument out = new StreamingCorpusWriterDocument();
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true);
         SAXParser parser = parserFactory.newSAXParser();
         XMLReader saxReader = parser.getXMLReader();
         saxReader.setContentHandler(new SAXBasicHandler()
