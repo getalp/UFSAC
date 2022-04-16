@@ -82,14 +82,14 @@ Direct link to the data: <https://drive.google.com/file/d/1FOpl6AUHVRLbVp5zPQQmj
 
 ### Version 1.1.0 (June 2018)
 
-Direct link to the data: <https://drive.google.com/file/d/12tIfu85GrbeQcMs3H5VQOvzSqNWvYuol>
+Direct link to the data: <https://drive.google.com/file/d/1XKOnRPnm0TSia1PKwe2xsGE4IDqvAAbb>
 
 - Fix a problem where some POS tags did not follow the PTB convention
 - Merge the "omsti_part{0,1,2,3,4}.xml" files in one single "omsti.xml" file
 
 ### Version 1.0.0 (May 2018)
 
-Direct link to the data: <https://drive.google.com/file/d/1kF8WKpMlWtBB13y6O20pj5AcWUmnXz-b>
+Direct link to the data: <https://drive.google.com/file/d/1-II0demgruLdSdI8SC6dmnIqDNrZvdpW>
 
 Original version which contains the following corpora:
 - Semcor (original data: <http://web.eecs.umich.edu/~mihalcea/downloads/semcor/semcor1.6.tar.gz>)
