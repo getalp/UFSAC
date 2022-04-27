@@ -18,6 +18,12 @@ public class ConvertOriginalCorpora
 
         converter.convert(new Senseval2LexicalSampleConverter("test"), "data/original_corpus/senseval2/english-lex-sample", "data/corpus/senseval2_lexical_sample_test.xml", 17, false);
 
+        converter.convert(new Senseval3Task6Converter("train"), "data/original_corpus/senseval3task6", "data/corpus/senseval3task6_train.xml", 171, false);
+
+        converter.convert(new Senseval3Task6Converter("test"), "data/original_corpus/senseval3task6", "data/corpus/senseval3task6_test.xml", 171, false);
+
+        converter.convert(new TrainOMaticConverter(), "data/original_corpus/train-o-matic", "data/corpus/trainomatic.xml", 30, true);
+
         converter.convert(new MihalceaSensevalConverter("d00", "d01", "d02"), "data/original_corpus/mihalcea/senseval2", "data/corpus/senseval2.xml", 171, false);
 
         converter.convert(new MihalceaSensevalConverter("d000", "d001", "d002"), "data/original_corpus/mihalcea/senseval3", "data/corpus/senseval3task1.xml", 171, false);
