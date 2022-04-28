@@ -22,7 +22,7 @@ public class ConvertOriginalCorpora
 
         converter.convert(new Senseval3Task6Converter("test"), "data/original_corpus/senseval3task6", "data/corpus/senseval3task6_test.xml", 171, false);
 
-        converter.convert(new TrainOMaticConverter(), "data/original_corpus/train-o-matic", "data/corpus/trainomatic.xml", 30, true);
+        converter.convert(new TrainOMaticConverter(), "data/original_corpus/train-o-matic-data/EN/EN.500-2.0/mergedFiles", "data/corpus/trainomatic.xml", 30, true);
 
         converter.convert(new MihalceaSensevalConverter("d00", "d01", "d02"), "data/original_corpus/mihalcea/senseval2", "data/corpus/senseval2.xml", 171, false);
 
