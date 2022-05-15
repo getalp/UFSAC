@@ -63,14 +63,12 @@ And if you want to use the library as a dependency in another Maven projects:
 
 ### Version 2.1 (October 2018)
 
-Direct link to the data: <https://drive.google.com/file/d/1Oigo3kzRosz2VjyA44vpJZ58tDFyLRMO>
+Direct link to the data: <https://drive.google.com/file/d/1kwBMIDBTf6heRno9bdLvF-DahSLHIZyV>
 
 - Small fix in Semeval2007Task7, Semeval2015Task13 and Raganato et al. corpora where words in a multi-word expression were collapsed. They are now separated by an underscore symbol.
 - Version number is shorter: `<major version>.<minor version>`
 
 ### Version 2.0.0 (July 2018)
-
-Direct link to the data: <https://drive.google.com/file/d/1FOpl6AUHVRLbVp5zPQQmjc-HVsssT1up>
 
 - Add new corpora:
   - *Raganato et al.*'s versions of SensEval/SemEval corpora (6 separate corpora, original data: <http://lcl.uniroma1.it/wsdeval/data/WSD_Unified_Evaluation_Datasets.zip>) 
