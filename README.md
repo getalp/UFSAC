@@ -8,7 +8,7 @@ The full article is available at the following URL: <http://www.lrec-conf.org/pr
 
 This repository contains:
 
-* The sense annotated corpora in UFSAC, the format described in the paper, in the folder **`corpus`** (**also available through direct links, see below**). Note that the files have been compressed using the tool `xz` and therefore needs to be decompressed with `unxz` or similar.  
+* The sense annotated corpora in UFSAC, the format described in the paper, **available through direct links, see below**. Note that the files have been compressed using the tool `xz` and therefore needs to be decompressed with `unxz` or similar.  
 The last version (2.1) contains the following corpora annotated with WordNet 3.0 sense keys:
   * SemCor  
     → file `semcor.xml`
