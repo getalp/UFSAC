@@ -8,7 +8,7 @@ The full article is available at the following URL: <http://www.lrec-conf.org/pr
 
 This repository contains:
 
-* The sense annotated corpora in UFSAC, the format described in the paper, in the folder **`corpus`** (**also available through direct links, see below**). Note that the files have been compressed using the tool `xz` and therefore needs to be decompressed with `unxz` or similar.  
+* The sense annotated corpora in UFSAC, the format described in the paper, **available through direct links, see below**. Note that the files have been compressed using the tool `xz` and therefore needs to be decompressed with `unxz` or similar.  
 The last version (2.1) contains the following corpora annotated with WordNet 3.0 sense keys:
   * SemCor  
     → file `semcor.xml`
@@ -63,14 +63,12 @@ And if you want to use the library as a dependency in another Maven projects:
 
 ### Version 2.1 (October 2018)
 
-Direct link to the data: <https://drive.google.com/file/d/1Oigo3kzRosz2VjyA44vpJZ58tDFyLRMO>
+Direct link to the data: <https://drive.google.com/file/d/1kwBMIDBTf6heRno9bdLvF-DahSLHIZyV>
 
 - Small fix in Semeval2007Task7, Semeval2015Task13 and Raganato et al. corpora where words in a multi-word expression were collapsed. They are now separated by an underscore symbol.
 - Version number is shorter: `<major version>.<minor version>`
 
 ### Version 2.0.0 (July 2018)
-
-Direct link to the data: <https://drive.google.com/file/d/1FOpl6AUHVRLbVp5zPQQmjc-HVsssT1up>
 
 - Add new corpora:
   - *Raganato et al.*'s versions of SensEval/SemEval corpora (6 separate corpora, original data: <http://lcl.uniroma1.it/wsdeval/data/WSD_Unified_Evaluation_Datasets.zip>) 
@@ -82,14 +80,14 @@ Direct link to the data: <https://drive.google.com/file/d/1FOpl6AUHVRLbVp5zPQQmj
 
 ### Version 1.1.0 (June 2018)
 
-Direct link to the data: <https://drive.google.com/file/d/12tIfu85GrbeQcMs3H5VQOvzSqNWvYuol>
+Direct link to the data: <https://drive.google.com/file/d/1XKOnRPnm0TSia1PKwe2xsGE4IDqvAAbb>
 
 - Fix a problem where some POS tags did not follow the PTB convention
 - Merge the "omsti_part{0,1,2,3,4}.xml" files in one single "omsti.xml" file
 
 ### Version 1.0.0 (May 2018)
 
-Direct link to the data: <https://drive.google.com/file/d/1kF8WKpMlWtBB13y6O20pj5AcWUmnXz-b>
+Direct link to the data: <https://drive.google.com/file/d/1-II0demgruLdSdI8SC6dmnIqDNrZvdpW>
 
 Original version which contains the following corpora:
 - Semcor (original data: <http://web.eecs.umich.edu/~mihalcea/downloads/semcor/semcor1.6.tar.gz>)
